@@ -1,0 +1,76 @@
+
+Commande :
+
+cd /Users/hugo/Stage/Jean-Steve/Data_Hugo/Flower
+
+python3 client.py --partition=
+
+For centralized (No Batch_size):
+
+    5 epochs : 754/754 [==============================] - 1s 950us/step - loss: 26.5357 - root_mean_squared_error: 5.1513 - val_loss: 0.4611 - val_root_mean_squared_error: 0.6790
+
+    10 epochs : 754/754 [==============================] - 1s 953us/step - loss: 26.5397 - root_mean_squared_error: 5.1517 - val_loss: 0.4543 - val_root_mean_squared_error: 0.6740
+
+    20 epochs : 754/754 [==============================] - 1s 940us/step - loss: 26.5392 - root_mean_squared_error: 5.1516 - val_loss: 0.4577 - val_root_mean_squared_error: 0.6765
+
+    100 epochs : 754/754 [==============================] - 1s 957us/step - loss: 26.5400 - root_mean_squared_error: 5.1517 - val_loss: 0.4738 - val_root_mean_squared_error: 0.6883
+
+
+For Decentralized : # Each round involves 2 epochs per clients, there is 5 (configurable) rounds in total 
+
+
+    FedAvg :
+        
+        3 clients : (4, 0.6768450140953064)]}
+
+        5 clients : app_fit: metrics_centralized {'RMSE': [(0, 727065034752.0), (1, 0.8881651163101196), (2, 0.6904903054237366), (3, 0.6781010031700134), (4, 0.6728640794754028)]}
+
+        10 clients : app_fit: metrics_centralized {'RMSE': [(0, 1032207400960.0), (1, 1724600704.0), (2, 73055.1640625), (3, 0.6772651076316833), (4, 0.6729989051818848)]}
+
+    FedAdam :
+
+        3 clients : app_fit: metrics_centralized {'RMSE': [(0, 647143620608.0), (1, 190622996627456.0), (2, 0.6641743779182434), (3, 6.954670429229736), (4, 3.208224296569824)]}
+
+        5 clients : app_fit: metrics_centralized {'RMSE': [(0, 665639583744.0), (1, 9.293660163879395), (2, 0.8975209593772888), (3, 0.7705333232879639), (4, 0.656170129776001)]}
+
+        
+
+
+
+
+
+
+
+
+Idea :
+    Maybe add a time comparaison ?
+        Like target a certain goal for the metrics and see how much time it takes for both approach to attain it ?
+
+
+For centralized (No Batch_size):
+
+
+
+
+
+Time : 
+    - Centralized : 
+        5 epochs : T = 3,13s system 185% cpu 11,314 total --> RMSE : 0.6837
+        10 epochs : T = 5,35s system 213% cpu 16,403 total --> RMSE : 0.6772
+        20 epochs : T = 10,28s system 249% cpu 27,175 total --> RMSE : 0.6853
+        100 epochs : T = 47,41s system 269% cpu 1:51,11 total --> RMSE : 0.7102
+
+    - Federated (Timed at the connection of the last client):
+
+        - 2 clients :
+            5 rounds (2 epochs per rounds) : T =  1,67s system 123% cpu 10,775 total --> RMSE :
+            10 rounds (2 epochs per rounds) : T =  1,69s system 116% cpu 11,845 total --> RMSE :
+            20 rounds (2 epochs per rounds) : T =  1,76s system 104% cpu 14,467 total --> RMSE  :
+            100 rounds (2 epochs per rounds) : T =  2,42s system 72% cpu 35,376 total --> RMSE :
+
+        - 5 clients :
+            5 rounds (2 epochs per rounds) : T =  1,45s system 110% cpu 11,221 total --> RMSE :
+            10 rounds (2 epochs per rounds) : T =  1,58s system 101% cpu 14,105 total --> RMSE :
+            20 rounds (2 epochs per rounds)  : T =  1,57s system 93% cpu 16,108 total --> RMSE :
+            100 rounds (2 epochs per rounds) : T =  25,66s system 68% cpu 41,791 total --> RMSE : 0.685
+        
