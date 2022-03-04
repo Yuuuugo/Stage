@@ -1,0 +1,6 @@
+
+
+
+FedAVG : 2 clients , 5 epochs :
+
+    INFO:flower:app_fit: metrics_centralized {'accuracy': [(0, 0.005304389167577028), (1, 0.7919027209281921), (2, 0.8309693932533264)]}
