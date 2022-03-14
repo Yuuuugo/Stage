@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-nb_client = 5
+nb_client = 2
 nb_rounds = 100
 
 def Data():

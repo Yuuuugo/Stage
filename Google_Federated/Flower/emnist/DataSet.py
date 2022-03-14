@@ -154,7 +154,7 @@ def get_centralized_datasets(
 Train, Test = get_centralized_datasets()
 import  tensorflow_datasets as tfds
 
-def data_exctration(Brute):
+def data_extration(Brute):
   Brute = tfds.as_numpy(Brute)
   L = []
   for example in Brute:
@@ -176,6 +176,6 @@ def data_exctration(Brute):
   Better_y_ = np.array(Better_y_)
   return Better_X_,Better_y_
 
-X_train, y_train = data_exctration(Train)
-X_test, y_test = data_exctration(Test)
+X_train, y_train = data_extration(Train)
+X_test, y_test = data_extration(Test)
 

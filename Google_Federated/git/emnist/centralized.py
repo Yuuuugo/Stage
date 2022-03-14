@@ -32,7 +32,7 @@ def run_centralized(optimizer: tf.keras.optimizers.Optimizer,
                     decay_epochs: Optional[int] = None,
                     lr_decay: Optional[float] = None,
                     hparams_dict: Optional[Mapping[str, Any]] = None,
-                    emnist_model: Optional[str] = 'cnn',
+                    emnist_model: Optional[str] = 'cnn', # What the model is.
                     max_batches: Optional[int] = None):
   """Trains a model on EMNIST character recognition using a given optimizer.
 
@@ -97,6 +97,6 @@ def run_centralized(optimizer: tf.keras.optimizers.Optimizer,
 run_centralized(optimizer =  tf.keras.optimizers.Adam(),
                     experiment_name =  "test1",
                     root_output_dir = "/Users/hugo/Stage/Google_Federated/git/emnist",
-                    num_epochs = 15,
-                    batch_size = 32
+                    num_epochs = 1500, # Real number should be = number of rounds : 1500
+                    batch_size = 20
                 )
