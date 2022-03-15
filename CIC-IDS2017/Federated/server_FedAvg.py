@@ -6,17 +6,16 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import flwr as fl
 import tensorflow as tf
-from tensorflow.keras import layers
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/Users/hugo/Stage/Stage/CIC-IDS2017/Dataset')
 from Data import *
-from Preparing_Data import *
+from Federated_set import X_test,y_test
 
 import matplotlib.pyplot as plt 
 
 Epochs = []
-RMSE_value = []
+accuracy_value = []
 Loss_value = []
 
 
@@ -31,14 +30,14 @@ def del_big_value(L):
     return reduced_L, reduced_epochs
 
 def plotting_():
-    #del RMSE_value[0]
-    reduced_RMSE, reduced_epochs = del_big_value(RMSE_value)
-    plt.plot(reduced_epochs,reduced_RMSE)
+    #del accuracy_value[0]
+    reduced_accuracy, reduced_epochs = del_big_value(accuracy_value)
+    plt.plot(reduced_epochs,reduced_accuracy)
     plt.title(" Strategy = FedAvg")
     plt.xlabel('Epochs')
-    plt.ylabel('RMSE')
+    plt.ylabel('accuracy')
     plt.figtext(.6, .8, "Number of client = " +  str(nb_client))
-    plt.figtext(.6, .75, "Final RMSE = " +  str(round(RMSE_value[len(RMSE_value)-1],3)))
+    plt.figtext(.6, .75, "Final accuracy = " +  str(round(accuracy_value[len(accuracy_value)-1],3)))
     plt.show()
 
     del Loss_value[0]
@@ -49,7 +48,7 @@ def plotting_():
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.figtext(.6, .8, "Number of client = " +  str(nb_client))
-    plt.figtext(.6, .75, "Final Loss = " +  str(round(RMSE_value[len(RMSE_value)-1],3)))
+    plt.figtext(.6, .75, "Final Loss = " +  str(round(accuracy_value[len(accuracy_value)-1],3)))
     plt.show()
 
 def main() -> None:
@@ -92,7 +91,6 @@ def get_eval_fn(model):
     """Return an evaluation function for server-side evaluation."""
 
     # Load data and model here to avoid the overhead of doing it in `evaluate` itself
-    _, x_val ,_, y_val = X_train,X_test,y_train,y_test
 
     # Use the last 5k training examples as a validation set
 
@@ -102,8 +100,8 @@ def get_eval_fn(model):
     ) -> Optional[Tuple[float, Dict[str, fl.common.Scalar]]]:
         model.set_weights(weights)  # Update model with the latest parameters
         #model.fit(x_train,y_train,epochs = 5) Not needed 
-        loss, accuracy = model.evaluate(x_val, y_val)
-        RMSE_value.append(accuracy)
+        loss, accuracy = model.evaluate(X_test, y_test)
+        accuracy_value.append(accuracy)
         Loss_value.append(loss)
         return loss,{"accuracy": accuracy} #,loss ( not really needed )
 

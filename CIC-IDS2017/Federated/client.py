@@ -8,8 +8,8 @@ from Data import nb_client
 from Data import nb_rounds
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.insert(1, '/Users/hugo/Stage/Stage/CIC-IDS2017/Dataset')
-from Preparing_Data import X_train, X_test, y_train, y_test
+sys.path.insert(0, '/Users/hugo/Stage/Stage/CIC-IDS2017/Dataset/')
+from Federated_set import Set,X_test,y_test
 
 import argparse
 import os
@@ -26,9 +26,9 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 # Define Flower client
 class Client(fl.client.NumPyClient):
-    def __init__(self, model, x_train, y_train, x_test, y_test):
+    def __init__(self, model, Set, x_test, y_test):
         self.model = model
-        self.x_train, self.y_train = x_train, y_train
+        self.Set = Set
         self.x_test, self.y_test = x_test, y_test
 
     def get_parameters(self):
@@ -47,12 +47,12 @@ class Client(fl.client.NumPyClient):
         actual_rnd : int = (config["rnd"]-1)
         print("!!!!!!!!!!!!!!!!!!!!!!")
         print("Actual round is ", actual_rnd)
-        print("Client are going from their sample " + str( int((actual_rnd/nb_rounds) * len(self.x_train))) + " to their sample " + str (int(((actual_rnd+1)/nb_rounds) * len(self.x_train))) )
+        #print("Client are going from their sample " + str( int((actual_rnd/nb_rounds) * len(self.x_train))) + " to their sample " + str (int(((actual_rnd+1)/nb_rounds) * len(self.x_train))) )
         print("!!!!!!!!!!!!!!!!!!!!!!")
         # Train the model using hyperparameters from config
         history = self.model.fit(
-            self.x_train[int((actual_rnd/nb_rounds) * len(self.x_train)):int(((actual_rnd+1)/nb_rounds) * len(self.x_train))], # In each round the client will train with differents data
-            self.y_train[int((actual_rnd/nb_rounds) * len(self.y_train)):int(((actual_rnd+1)/nb_rounds) * len(self.y_train))],
+            self.Set[actual_rnd][0], # In each round the client will train with differents data
+            self.Set[actual_rnd][1],
             batch_size,
             epochs,
             validation_split=0.1,
@@ -60,12 +60,12 @@ class Client(fl.client.NumPyClient):
 
         # Return updated model parameters and results
         parameters_prime = self.model.get_weights()
-        num_examples_train = len(self.x_train)
+        num_examples_train = len(self.Set[actual_rnd][0])
         results = {
             "loss": history.history["loss"][0],
             "accuracy": history.history["accuracy"][0],
             "val_loss": history.history["val_loss"][0],
-            "val_MSE": history.history["val_accuracy"][0],
+            "val_accuracy": history.history["val_accuracy"][0],
         }
         return parameters_prime, num_examples_train, results
 
@@ -87,7 +87,7 @@ class Client(fl.client.NumPyClient):
 def main() -> None:
     # Parse command line argument `partition`
     parser = argparse.ArgumentParser(description="Flower")
-    parser.add_argument("--partition", type=int, choices=range(0, nb_client), required=True)
+    parser.add_argument("--client", type=int, choices=range(0, nb_client), required=True)
     args = parser.parse_args()
 
     # Load and compile Keras model
@@ -97,7 +97,7 @@ def main() -> None:
     tf.keras.layers.Dense(1024, activation = 'relu'),
     tf.keras.layers.Dense(512, activation = 'relu'),
     tf.keras.layers.Dense(1, activation = 'sigmoid')
-    ])
+])
 
     model.compile(
               optimizer = tf.keras.optimizers.Adam(),
@@ -105,25 +105,22 @@ def main() -> None:
               metrics = ["accuracy"],
               )
 
-    # Load a subset of CIFAR-10 to simulate the local data partition
-    (x_train, y_train), (x_test, y_test) = load_partition(args.partition)
+    Set_client,(X_test, y_test) = load_client(args.client)
 
     # Start Flower client
-    client = Client(model, x_train, y_train, x_test, y_test)
+    client = Client(model, Set_client, X_test, y_test)
     fl.client.start_numpy_client("[::]:8080", client=client)
 
 
 
-def load_partition(idx: int):
-    """Load 1/10th of the training and test data to simulate a partition."""
+def load_client(idx: int):
     assert idx in range(nb_client)
-    x_train, x_test, = X_train, X_test, 
     return (
-        x_train[ int((idx/nb_client) * len(x_train)) : int(((idx+1)/nb_client) * len(x_train))],
-        y_train[ int((idx/nb_client) * len(y_train)) : int(((idx+1)/nb_client) * len(y_train))],
-    ), (
-        x_test,#[(idx//nb_client) * len(x_test) : ((idx//nb_client) + 1) * len(x_test)],
-        y_test,#[(idx//nb_client) * len(x_test) : ((idx//nb_client) + 1) * len(x_test)],
+        Set[idx]
+    , (
+        X_test,
+        y_test,
+    )
     )
 
 

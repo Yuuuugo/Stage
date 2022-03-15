@@ -1,0 +1,5 @@
+
+Centralized :
+
+	100 epochs :
+		- Best accuracy obtain = 0.96
