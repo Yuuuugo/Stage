@@ -1,0 +1,5 @@
+Number of samples emnist : 33580
+
+Val accuracy after 3 Epochs : 0.8614
+Val accuracy after 5 Epochs : 0.8637
+Val accuracy after 10 Epochs : 0.8642

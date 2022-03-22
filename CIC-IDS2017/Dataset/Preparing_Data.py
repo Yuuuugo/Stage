@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import random
 
 
-df = pd.read_csv('/Users/hugo/Stage/Stage/CIC-IDS2017/Dataset/web_attacks_balanced.csv')
+df = pd.read_csv('/home/hugo/hugo/Stage/CIC-IDS2017/Dataset/web_attacks_balanced.csv')
 df['Label'] = df['Label'].apply(lambda x: 0 if x == 'BENIGN' else 1)
 
 excluded = ['Flow ID', 'Source IP', 'Source Port', 'Destination IP', 'Destination Port', 'Protocol', 'Timestamp']

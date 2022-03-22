@@ -23,6 +23,14 @@ import tensorflow as tf
 import utils_impl
 
 
+
+# Ensure that a GPU version TensorFlow process only runs on CPU
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+""" 'The 2022-03-21 11:15:59.315959: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: 
+CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected' error is normal """
+
+
 class AtomicCSVLogger(tf.keras.callbacks.Callback):
   """A callback that writes per-epoch values to a CSV file."""
 
@@ -82,8 +90,8 @@ def run(
   tensorboard_dir = os.path.join(root_output_dir, 'logdir', experiment_name)
   results_dir = os.path.join(root_output_dir, 'results', experiment_name)
 
-  for path in [root_output_dir, tensorboard_dir, results_dir]:
-    tf.io.gfile.makedirs(path)
+  """ for path in [root_output_dir, tensorboard_dir, results_dir]:
+    tf.io.gfile.makedirs(path) """
 
   if hparams_dict:
     hparams_file = os.path.join(results_dir, 'hparams.csv')
@@ -111,8 +119,8 @@ def run(
   history = keras_model.fit(
       train_dataset,
       validation_data=validation_dataset,
-      epochs=num_epochs,
-      callbacks=training_callbacks)
+      epochs=num_epochs,)
+      #callbacks=training_callbacks)
 
   logging.info('Final training metrics:')
   for metric in keras_model.metrics:

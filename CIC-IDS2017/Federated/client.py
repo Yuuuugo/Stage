@@ -8,7 +8,7 @@ from Data import nb_client
 from Data import nb_rounds
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.insert(0, '/Users/hugo/Stage/Stage/CIC-IDS2017/Dataset/')
+sys.path.insert(1, '/home/hugo/hugo/Stage/CIC-IDS2017/Dataset')
 from Federated_set import Set,X_test,y_test
 
 import argparse
@@ -19,6 +19,8 @@ import tensorflow as tf
 
 import flwr as fl
 
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Make TensorFlow logs less verbose
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"

@@ -1,5 +1,35 @@
 
 Centralized :
 
+	5 epochs :
+		- Best accuracy obtain = 0.95
+	10 epochs :
+		- Best accuracy obtain = 0.945
+	20 epochs :
+		- Best accuracy obtain = 0.957
 	100 epochs :
 		- Best accuracy obtain = 0.96
+
+Federated :
+
+	(FedAvg)
+		3 rounds :
+			3 clients :
+				- Best accuracy obtain = 0.57
+			5 clients :
+				- Best accuracy obtain = 0.67
+			12 clients :
+				- Best accuracy obtain = 0.71
+
+		5 rounds :
+			3 clients :
+				- Best accuracy obtain = 
+			5 clients :
+				- Best accuracy obtain =
+			12 clients :
+				- Best accuracy obtain =4
+
+
+- logs pour chaque clients, date time
+- tag git 
+- vim /proc/"process id"/net/dev  byts et nombre de paquet (parser)

@@ -8,7 +8,8 @@ import flwr as fl
 import tensorflow as tf
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.insert(1, '/Users/hugo/Stage/Stage/CIC-IDS2017/Dataset')
+#sys.path.insert(1, '/Users/hugo/Stage/Stage/CIC-IDS2017/Dataset')
+sys.path.insert(1, '/home/hugo/hugo/Stage/CIC-IDS2017/Dataset')
 from Data import *
 from Federated_set import X_test,y_test
 
