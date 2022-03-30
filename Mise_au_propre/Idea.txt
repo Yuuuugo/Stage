@@ -1,0 +1,12 @@
+
+
+Arguments en entrer : 
+    - Choix du Dataset
+    -> Choix du nombre de clients et de rounds 
+    -> On entraine et affiche en premier le resultat du centralized
+    -> Choix de l'algorithme d'aggregation
+    -> On train les clients du Federated et affiche les resultats
+    -> On lance tensrorboard avec les differents resultats
+
+
+Need to give the metrics used to server and client 

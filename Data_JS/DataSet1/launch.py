@@ -2,6 +2,9 @@ import threading
 import os
 import grpc
 from Data import nb_client
+import tensorflow as tf
+
+tf.random.set_seed(42)
 
 if os.environ.get('https_proxy'):
  del os.environ['https_proxy']

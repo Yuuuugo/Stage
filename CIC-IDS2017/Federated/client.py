@@ -7,9 +7,14 @@ from tensorflow.keras import layers
 from Data import nb_client
 from Data import nb_rounds
 import sys
+
+if os.environ.get("https_proxy"):
+    del os.environ["https_proxy"]
+if os.environ.get("http_proxy"):
+    del os.environ["http_proxy"]
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.insert(1, '/home/hugo/hugo/Stage/CIC-IDS2017/Dataset')
-from Federated_set import Set,X_test,y_test
+# sys.path.insert(1, '/home/hugo/hugo/Stage/CIC-IDS2017/Dataset')
+from Data import Set, X_test, y_test
 
 import argparse
 import os
@@ -20,6 +25,7 @@ import tensorflow as tf
 import flwr as fl
 
 import os
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Make TensorFlow logs less verbose
@@ -46,14 +52,16 @@ class Client(fl.client.NumPyClient):
         # Get hyperparameters for this round
         batch_size: int = config["batch_size"]
         epochs: int = config["local_epochs"]
-        actual_rnd : int = (config["rnd"]-1)
+        actual_rnd: int = config["rnd"] - 1
         print("!!!!!!!!!!!!!!!!!!!!!!")
         print("Actual round is ", actual_rnd)
-        #print("Client are going from their sample " + str( int((actual_rnd/nb_rounds) * len(self.x_train))) + " to their sample " + str (int(((actual_rnd+1)/nb_rounds) * len(self.x_train))) )
+        # print("Client are going from their sample " + str( int((actual_rnd/nb_rounds) * len(self.x_train))) + " to their sample " + str (int(((actual_rnd+1)/nb_rounds) * len(self.x_train))) )
         print("!!!!!!!!!!!!!!!!!!!!!!")
         # Train the model using hyperparameters from config
         history = self.model.fit(
-            self.Set[actual_rnd][0], # In each round the client will train with differents data
+            self.Set[actual_rnd][
+                0
+            ],  # In each round the client will train with differents data
             self.Set[actual_rnd][1],
             batch_size,
             epochs,
@@ -89,44 +97,46 @@ class Client(fl.client.NumPyClient):
 def main() -> None:
     # Parse command line argument `partition`
     parser = argparse.ArgumentParser(description="Flower")
-    parser.add_argument("--client", type=int, choices=range(0, nb_client), required=True)
+    parser.add_argument(
+        "--client", type=int, choices=range(0, nb_client), required=True
+    )
     args = parser.parse_args()
 
     # Load and compile Keras model
-    model = tf.keras.Sequential([
-    tf.keras.layers.Flatten(input_shape = (74,)),
-    tf.keras.layers.Dense(512, activation = 'relu'),
-    tf.keras.layers.Dense(1024, activation = 'relu'),
-    tf.keras.layers.Dense(512, activation = 'relu'),
-    tf.keras.layers.Dense(1, activation = 'sigmoid')
-])
+    model = tf.keras.Sequential(
+        [
+            tf.keras.layers.Flatten(input_shape=(74,)),
+            tf.keras.layers.Dense(512, activation="relu"),
+            tf.keras.layers.Dense(1024, activation="relu"),
+            tf.keras.layers.Dense(512, activation="relu"),
+            tf.keras.layers.Dense(1, activation="sigmoid"),
+        ]
+    )
 
     model.compile(
-              optimizer = tf.keras.optimizers.Adam(),
-              loss = tf.keras.losses.BinaryCrossentropy(),
-              metrics = ["accuracy"],
-              )
+        optimizer=tf.keras.optimizers.Adam(),
+        loss=tf.keras.losses.BinaryCrossentropy(),
+        metrics=["accuracy"],
+    )
 
-    Set_client,(X_test, y_test) = load_client(args.client)
+    Set_client, (X_test, y_test) = load_client(args.client)
 
     # Start Flower client
     client = Client(model, Set_client, X_test, y_test)
     fl.client.start_numpy_client("[::]:8080", client=client)
 
 
-
 def load_client(idx: int):
     assert idx in range(nb_client)
+
     return (
-        Set[idx]
-    , (
-        X_test,
-        y_test,
-    )
+        Set[idx],
+        (
+            X_test,
+            y_test,
+        ),
     )
 
 
 if __name__ == "__main__":
     main()
-
-

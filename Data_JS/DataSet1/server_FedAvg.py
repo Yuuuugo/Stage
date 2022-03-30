@@ -9,12 +9,18 @@ import tensorflow as tf
 from tensorflow.keras import layers
 from Data import *
 
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+""" 'The 2022-03-21 11:15:59.315959: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: 
+CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected' error is normal """
 
 import matplotlib.pyplot as plt 
 
 Epochs = []
 RMSE_value = []
 Loss_value = []
+
+tf.random.set_seed(42)
 
 
 

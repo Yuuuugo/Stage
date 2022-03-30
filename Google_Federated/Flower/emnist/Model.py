@@ -10,8 +10,16 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
+
+import os
 # limitations under the License.
 """Build a model for EMNIST classification."""
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+""" 'The 2022-03-21 11:15:59.315959: E tensorflow/stream_executor/cuda/cuda_driver.cc:271] failed call to cuInit: 
+CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected' error is normal """
+
+
 
 import functools
 from typing import Optional

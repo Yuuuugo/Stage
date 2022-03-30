@@ -1,25 +1,19 @@
 
 Centralized :
 
-	5 epochs :
-		- Best accuracy obtain = 0.95
-	10 epochs :
-		- Best accuracy obtain = 0.945
-	20 epochs :
-		- Best accuracy obtain = 0.957
-	100 epochs :
-		- Best accuracy obtain = 0.96
+	3 epochs :
+		- Accuracy = 0.8212
 
 Federated :
 
 	(FedAvg)
 		3 rounds :
+			2 clients :
+				- Best accuracy obtain = 0.73
 			3 clients :
-				- Best accuracy obtain = 0.57
-			5 clients :
-				- Best accuracy obtain = 0.67
+				- Best accuracy obtain = 0.72
 			12 clients :
-				- Best accuracy obtain = 0.71
+				- Best accuracy obtain =
 
 		5 rounds :
 			3 clients :
@@ -27,7 +21,7 @@ Federated :
 			5 clients :
 				- Best accuracy obtain =
 			12 clients :
-				- Best accuracy obtain =4
+				- Best accuracy obtain =
 
 
 - logs pour chaque clients, date time
