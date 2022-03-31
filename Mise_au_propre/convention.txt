@@ -2,3 +2,12 @@ Les Dataset sont decoupes uniquement en deux :
         - Training 
         - Testing 
     -> named allowed : X_train, X_test, y_train, y_test
+
+
+
+ps auwxf|grep Launcher
+
+htop
+
+kill -9 (force kill)
+kill -1 (par defaut)

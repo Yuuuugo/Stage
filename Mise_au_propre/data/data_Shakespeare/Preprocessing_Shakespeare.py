@@ -41,3 +41,5 @@ BUFFER_SIZE = 10000  # TF shuffles the data only within buffers
 BATCH_SIZE = 64  # Batch size
 
 dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
+
+print(dataset)

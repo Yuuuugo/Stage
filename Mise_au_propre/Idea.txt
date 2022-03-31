@@ -10,3 +10,8 @@ Arguments en entrer :
 
 
 Need to give the metrics used to server and client 
+
+
+
+
+Faire un object Federated

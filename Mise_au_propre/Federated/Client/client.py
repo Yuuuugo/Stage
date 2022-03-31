@@ -2,11 +2,14 @@ from gc import callbacks
 import flwr as fl
 import tensorflow as tf
 import sys
-
-
-sys.path.insert(1, "/home/hugo/hugo/Stage/MovieLens")
+import os
 
 timed = ""
+
+if os.environ.get("https_proxy"):
+    del os.environ["https_proxy"]
+if os.environ.get("http_proxy"):
+    del os.environ["http_proxy"]
 
 
 class Client(fl.client.NumPyClient):
@@ -64,12 +67,12 @@ class Client(fl.client.NumPyClient):
         num_examples_train = len(self.X_train)
 
         # Modify the structure to have the metrics needed
-        """ results = {
+        results = {
             "loss": history.history["loss"][0],
             "metrics_used": history.history["metrics_used"][0],
             "val_loss": history.history["val_loss"][0],
             "val_metrics_used": history.history["val_metrics_used"][0],
-        } """
+        }
         return parameters_prime, num_examples_train, results
 
     def evaluate(self, parameters, config):
