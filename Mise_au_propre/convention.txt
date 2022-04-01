@@ -11,3 +11,5 @@ htop
 
 kill -9 (force kill)
 kill -1 (par defaut)
+
+gnu screen ou nohup

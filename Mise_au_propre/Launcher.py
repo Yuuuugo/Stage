@@ -6,20 +6,26 @@ import matplotlib
 from subprocess import call
 
 PATH = os.getcwd()
-sys.path.append(PATH + "/Centralized")
+""" sys.path.append(PATH + "/Centralized")
 import centralized_JS
 import centralized_CIC_IDS2017
 import centralized_MovieLens
-import centralized_Shakespeare
+import centralized_Shakespeare """
 
-sys.path.append(PATH + "/Federated")
-import federated_JS
-import federated_CIC_IDS2017
-import federated_MovieLens
+from Fed.federated_JS import run_JS
+
+""" import federated_CIC_IDS2017
+import federated_MovieLens """
 
 
 import traceback
 import signal
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+if os.environ.get("https_proxy"):
+    del os.environ["https_proxy"]
+if os.environ.get("http_proxy"):
+    del os.environ["http_proxy"]
 
 
 def __signal_code_to_name(code):
@@ -77,7 +83,7 @@ def main() -> None:
     # print(args.Dataset)
     centralized = "centralized_" + args.Dataset + ".run()"
 
-    federated = "federated_" + args.Dataset + ".run_" + args.Dataset
+    federated = "run_" + args.Dataset
     arguments = [args.strategy, args.nbr_clients, args.nbr_rounds]
 
     print("-------------------" * 4 + "Start of Centralized" + "-----------------" * 4)
