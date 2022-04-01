@@ -38,8 +38,10 @@ class RecommenderNet(tf.keras.Model):
         return tf.nn.sigmoid(x)
 
 
-model = RecommenderNet(num_users, num_movies)
-model.compile(
-    loss=tf.keras.losses.BinaryCrossentropy(),
-    optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
-)
+def create_model_MovieLens():
+    model = RecommenderNet(num_users, num_movies)
+    model.compile(
+        loss=tf.keras.losses.BinaryCrossentropy(),
+        optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+    )
+    return model

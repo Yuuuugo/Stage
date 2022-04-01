@@ -15,7 +15,7 @@ sys.path.insert(1, PATH_MODEL)
 sys.path.insert(1, PATH_DATA)
 sys.path.insert(1, PATH_STRATEGY)
 
-from model_CIFAR10 import model
+# from model_CIFAR10 import model
 from Preprocessing_CIFAR10 import X_test, X_train, y_test, y_train
 from Client.client import Client
 import flwr as fl

@@ -19,18 +19,19 @@ def build_model(vocab_size, embedding_dim, rnn_units, batch_size):
     return model
 
 
-model = build_model(
-    vocab_size=65,  # no. of unique characters
-    embedding_dim=256,  # 256
-    rnn_units=1024,  # 1024
-    batch_size=64,
-)
-
-
-def loss(labels, logits):
-    return tf.keras.losses.sparse_categorical_crossentropy(
-        labels, logits, from_logits=True
+def create_model_Shakespeare():
+    model = build_model(
+        vocab_size=65,  # no. of unique characters
+        embedding_dim=256,  # 256
+        rnn_units=1024,  # 1024
+        batch_size=64,
     )
 
+    def loss(labels, logits):
+        return tf.keras.losses.sparse_categorical_crossentropy(
+            labels, logits, from_logits=True
+        )
 
-model.compile(optimizer="adam", loss=loss)
+    model.compile(optimizer="adam", loss=loss)
+
+    return model

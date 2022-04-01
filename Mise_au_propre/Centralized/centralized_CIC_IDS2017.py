@@ -9,6 +9,6 @@ sys.path.insert(1, PATH_MODEL)
 sys.path.insert(1, PATH_DATA)
 
 
-from model_CIC_IDS2017 import model
+# from model_CIC_IDS2017 import model
 
 # from Preprocessing_CIC_IDS2017 import X_train, X_test, y_train, y_test

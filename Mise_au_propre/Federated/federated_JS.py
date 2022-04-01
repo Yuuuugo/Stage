@@ -3,6 +3,7 @@ import os
 import sys
 from xmlrpc import client
 from grpc import server
+import time
 
 import matplotlib.pyplot as plt
 from multiprocessing import Process
@@ -11,23 +12,25 @@ PATH_MODEL = "/home/hugo/hugo/Stage/Mise_au_propre/Model/"
 PATH_DATA = "/home/hugo/hugo/Stage/Mise_au_propre/data/data_JS/"
 PATH_STRATEGY = "/home/hugo/hugo/Stage/Mise_au_propre/Federated/Server"
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
 sys.path.insert(1, PATH_MODEL)
 sys.path.insert(1, PATH_DATA)
 sys.path.insert(1, PATH_STRATEGY)
 
-from model_JS import model
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
+
+from model_JS import create_model_JS
 from Preprocessing_JS import X_test, X_train, y_test, y_train
-from Client.client import Client
+from Client.client import Client_Test
 import flwr as fl
 
 from FedAvg import FedAvg2
 import FedAdagrad
 import FedAdam
 import FedYogi
+from flwr.server.strategy import FedAvg
 
-metrics = "accuracy"
 
 if os.environ.get("https_proxy"):
     del os.environ["https_proxy"]
@@ -35,30 +38,45 @@ if os.environ.get("http_proxy"):
     del os.environ["http_proxy"]
 
 
+def start_server(num_rounds: int, num_clients: int, fraction_fit: float):
+    """Start the server with a slightly adjusted FedAvg strategy."""
+    strategy = FedAvg(
+        min_available_clients=num_clients,
+        fraction_fit=fraction_fit,
+    )
+    # Exposes the server by default on port 8080
+    fl.server.start_server(
+        strategy=strategy, config={"num_rounds": num_rounds}, server_address="[::]:8080"
+    )
+
+
 def run_JS(strategy, nbr_clients, nbr_rounds):
-    server_thread = Process(
+    process = []
+    model = create_model_JS()
+    server_process = Process(
         target=eval(strategy + "2"),
         args=(model, X_test, y_test, nbr_clients, nbr_rounds),
     )
-    server_thread.start()
-    server_thread.join()
-    """  print("After start")
-    Client_list = []
+    # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
+    server_process.start()
+    process.append(server_process)
+    time.sleep(5)
+
+    print("After start")
     for i in range(nbr_clients):
-        print(i)
-        Client_i = Process(target=launching, args=(i,))
-        Client_list.append(Client_i)
-        Client_list[i].start()
+        Client_i = Process(target=start_client, args=(i,))
+        Client_i.start()
+        process.append(Client_i)
 
-    server_thread.join()
-    for i in range(nbr_clients):
-        Client_list[i].join() """
+    for p in process:
+        p.join()
 
 
-def launching(i):
+def start_client(i):
     print("Launching of client" + str(i))
     # Start Flower client
-    client = Client(
+    model = create_model_JS()
+    client = Client_Test(
         model=model,
         X_train=X_train,
         y_train=y_train,

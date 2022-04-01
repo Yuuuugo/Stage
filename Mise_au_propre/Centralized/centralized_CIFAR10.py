@@ -10,13 +10,13 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 sys.path.insert(1, PATH_MODEL)
 sys.path.insert(1, PATH_DATA)
 
-from model_CIFAR10 import model
+from model_CIFAR10 import create_model_CIFAR10
 from Preprocessing_CIFAR10 import X_train, X_test, y_test, y_train
 
 
 def run():
     epochs = 5
-
+    model = create_model_CIFAR10()
     history = model.fit(
         X_train,
         [y_train],

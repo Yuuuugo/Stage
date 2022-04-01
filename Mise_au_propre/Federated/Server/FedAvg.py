@@ -13,6 +13,8 @@ if os.environ.get("https_proxy"):
 if os.environ.get("http_proxy"):
     del os.environ["http_proxy"]
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 
 def get_eval_fn(model, X_test, y_test):
     """Return an evaluation function for server-side evaluation."""
@@ -60,7 +62,10 @@ def evaluate_config(rnd: int):
     return {"val_steps": val_steps}
 
 
-class FedAvg2(Process):
+from flwr.server.strategy import FedAvg
+
+
+class FedAvg2(FedAvg, Process):
     def __init__(self, model, X_test, y_test, nbr_clients, nbr_rounds):
         print("Test init")
         super().__init__()

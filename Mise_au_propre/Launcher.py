@@ -48,28 +48,33 @@ def main() -> None:
 
     # Parse command line argument `partition`
     parser = argparse.ArgumentParser(description="Flower")
+
     parser.add_argument(
-        "--nbr_clients", type=int, choices=range(1, 100), required=True, default=3
+        "--nbr_clients",
+        type=int,
+        choices=range(1, 100),
+        required=True,
     )
     parser.add_argument(
-        "--nbr_rounds", type=int, choices=range(1, 100), required=True, default=3
+        "--nbr_rounds",
+        type=int,
+        choices=range(1, 100),
+        required=True,
     )
     parser.add_argument(
         "--Dataset",
         type=str,
         choices=["JS", "CIC-IDS_2017", "MovieLens", "CIFAR10", "Shakespeare", "emnist"],
         required=True,
-        default="CIFAR10",
     )
     parser.add_argument(
         "--strategy",
         type=str,
         choices=["FedAvg", "FedAdam", "FedAdagrad", "FedYogi"],
         required=True,
-        strategy="FedAvg",
     )
     args = parser.parse_args()
-
+    # print(args.Dataset)
     centralized = "centralized_" + args.Dataset + ".run()"
 
     federated = "federated_" + args.Dataset + ".run_" + args.Dataset

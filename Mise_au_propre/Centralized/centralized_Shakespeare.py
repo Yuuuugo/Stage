@@ -8,7 +8,7 @@ PATH_DATA = "/home/hugo/hugo/Stage/Mise_au_propre/data/data_Shakespeare/"
 sys.path.insert(1, PATH_MODEL)
 sys.path.insert(1, PATH_DATA)
 
-from model_Shakespeare import model
+from model_Shakespeare import create_model_Shakespeare
 from Preprocessing_Shakespeare import dataset
 
 
