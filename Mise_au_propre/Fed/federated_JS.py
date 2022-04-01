@@ -2,7 +2,6 @@
 import os
 import sys
 from xmlrpc import client
-from grpc import server
 import time
 
 import matplotlib.pyplot as plt
@@ -50,11 +49,16 @@ def start_server(num_rounds: int, num_clients: int, fraction_fit: float):
     )
 
 
+from copy import deepcopy
+
+
 def run_JS(strategy, nbr_clients, nbr_rounds):
     process = []
+    # model2 = deepcopy(create_model_JS()) Bug
+    model2 = None
     server_process = Process(
         target=eval(strategy + "2"),
-        args=(X_test, y_test, nbr_clients, nbr_rounds),
+        args=(model2, X_test, y_test, nbr_clients, nbr_rounds),
     )
     # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()

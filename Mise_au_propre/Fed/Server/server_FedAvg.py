@@ -14,6 +14,7 @@ if os.environ.get("http_proxy"):
     del os.environ["http_proxy"]
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+from copy import deepcopy
 
 
 def get_eval_fn(model2, X_test, y_test):
@@ -63,7 +64,7 @@ def evaluate_config(rnd: int):
 
 
 class FedAvg2(Process):
-    def __init__(self, X_test, y_test, nbr_clients, nbr_rounds):
+    def __init__(self, model2, X_test, y_test, nbr_clients, nbr_rounds):
         print("Test init")
         super().__init__()
         self.X_test = X_test
@@ -71,12 +72,9 @@ class FedAvg2(Process):
         self.nbr_clients = nbr_clients
         self.nbr_rounds = nbr_rounds
         self.model = create_model_JS()
-
         self.run()
 
     def run(self):
-
-        print("Test run")
 
         strategy = fl.server.strategy.FedAvg(
             fraction_fit=0.3,
