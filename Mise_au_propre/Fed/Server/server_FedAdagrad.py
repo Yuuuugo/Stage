@@ -3,7 +3,7 @@ from multiprocessing import Process
 
 import flwr as fl
 from typing import Any, Callable, Dict, List, Optional, Tuple
-from flwr.server.strategy import FedAvg
+from flwr.server.strategy import FedAdagrad
 
 if os.environ.get("https_proxy"):
     del os.environ["https_proxy"]
@@ -29,9 +29,10 @@ def get_eval_fn(model2, X_test, y_test):
         # model2.fit(X_test, y_test, epochs=5)
         print("Test evaluate")
         # model2.summary()
-        loss, RMSE = model2.evaluate(X_test, y_test)
+        loss = model2.evaluate(X_test, y_test)
         print("Test after evaluate")
-        return loss, {"RMSE": RMSE}  # ,loss ( not really needed )
+        accuracy = loss
+        return loss, {"accuracy": accuracy}  # ,loss ( not really needed )
 
     return evaluate
 
@@ -58,7 +59,7 @@ def evaluate_config(rnd: int):
     return {"val_steps": val_steps}
 
 
-class FedAvg2(Process):
+class FedAdagrad2(Process):
     def __init__(self, model2, X_test, y_test, nbr_clients, nbr_rounds):
         print("Test init")
         super().__init__()
@@ -67,12 +68,12 @@ class FedAvg2(Process):
         self.nbr_clients = nbr_clients
         self.nbr_rounds = nbr_rounds
         self.model = model2
-        # self.client_nbr = client_nbr
+        # self.model = create_model_JS()
         self.run()
 
     def run(self):
 
-        strategy = fl.server.strategy.FedAvg(
+        strategy = fl.server.strategy.FedAdagrad(
             fraction_fit=0.3,
             fraction_eval=0.2,
             min_fit_clients=self.nbr_clients,

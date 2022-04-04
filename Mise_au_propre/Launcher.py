@@ -2,7 +2,6 @@ import threading
 import os
 import sys
 import argparse
-import matplotlib
 from subprocess import call
 
 PATH = os.getcwd()
@@ -13,9 +12,9 @@ import centralized_MovieLens
 import centralized_Shakespeare """
 
 from Fed.federated_JS import run_JS
+from Fed.federated_CIFAR10 import run_CIFAR10
 
-""" import federated_CIC_IDS2017
-import federated_MovieLens """
+# from Fed.federated_MNIST import run_MNIST
 
 
 import traceback
@@ -70,7 +69,7 @@ def main() -> None:
     parser.add_argument(
         "--Dataset",
         type=str,
-        choices=["JS", "CIC-IDS_2017", "MovieLens", "CIFAR10", "Shakespeare", "emnist"],
+        choices=["JS", "CIC-IDS_2017", "MovieLens", "CIFAR10", "Shakespeare", "MNIST"],
         required=True,
     )
     parser.add_argument(

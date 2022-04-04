@@ -1,23 +1,12 @@
 #!/usr/bin/python3
 import os
 import sys
-from xmlrpc import client
 import time
 
-import matplotlib.pyplot as plt
 from multiprocessing import Process
 
-# PATH_MODEL = "/home/hugo/hugo/Stage/Mise_au_propre/Model/"
-PATH_DATA = "/home/hugo/hugo/Stage/Mise_au_propre/data/data_JS/"
-PATH_STRATEGY = "/home/hugo/hugo/Stage/Mise_au_propre/Federated/Server"
-
-# sys.path.insert(1, PATH_MODEL)
-sys.path.insert(1, PATH_DATA)
-# sys.path.insert(1, PATH_STRATEGY)
-
-
-from Model.model_CIFAR10 import create_model_CIFAR10
-from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, X_train, y_test, y_train
+from Model.model_MNIST import create_model_MNIST
+from data.data_MNIST.Preprocessing_MNIST import X_test, X_train, y_test, y_train
 from Fed.Client.client import Client_Test
 import flwr as fl
 
@@ -25,13 +14,6 @@ from Fed.Server.server_FedAvg import FedAvg2
 from Fed.Server.server_FedAdam import FedAdam2
 from Fed.Server.server_FedYogi import FedYogi2
 from Fed.Server.server_FedAdagrad import FedAdagrad2
-
-""" 
-import FedAdagrad
-import FedAdam
-import FedYogi """
-
-from flwr.server.strategy import FedAvg
 
 
 if os.environ.get("https_proxy"):
@@ -42,25 +24,20 @@ if os.environ.get("http_proxy"):
 
 def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
     """Start the server with a slightly adjusted FedAvg strategy."""
-    model = create_model_CIFAR10()
+    model = create_model_MNIST()
     arguments = [model, X_test, y_test, nbr_clients, nbr_rounds]
     server = eval(strategy + "2")(*arguments)
 
 
-from copy import deepcopy
-
-
-def run_CIFAR10(strategy, nbr_clients, nbr_rounds):
+def run_MNIST(strategy, nbr_clients, nbr_rounds):
     process = []
-    # model2 = deepcopy(create_model_JS()) Bug
     server_process = Process(
         target=start_server,
         args=(strategy, X_test, y_test, nbr_clients, nbr_rounds),
     )
-    # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
     process.append(server_process)
-    time.sleep(5)
+    time.sleep(2)
 
     print("After start")
     for i in range(nbr_clients):
@@ -75,7 +52,7 @@ def run_CIFAR10(strategy, nbr_clients, nbr_rounds):
 def start_client(i):
     print("Launching of client" + str(i))
     # Start Flower client
-    model = create_model_CIFAR10()
+    model = create_model_MNIST()
     client = Client_Test(
         model=model,
         X_train=X_train,
