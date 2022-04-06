@@ -3,6 +3,10 @@ Les Dataset sont decoupes uniquement en deux :
         - Testing 
     -> named allowed : X_train, X_test, y_train, y_test
 
+fit pas sur les memes donnes (le client genere des donnes sucessivent) 
+-> avoir X_train decouper en fonction du nombre de round
+-> pour federated_CIC vu que le nombre de client est deja defini ( 12 ) il faut que chaque client est les bonnes donnes
+   le nombre de rounds est lui aussi fixe ( un par jours sur 3 jours )
 
 
 ps auwxf|grep Launcher

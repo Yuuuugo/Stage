@@ -7,17 +7,8 @@ import time
 import matplotlib.pyplot as plt
 from multiprocessing import Process
 
-# PATH_MODEL = "/home/hugo/hugo/Stage/Mise_au_propre/Model/"
-PATH_DATA = "/home/hugo/hugo/Stage/Mise_au_propre/data/data_JS/"
-PATH_STRATEGY = "/home/hugo/hugo/Stage/Mise_au_propre/Federated/Server"
-
-# sys.path.insert(1, PATH_MODEL)
-sys.path.insert(1, PATH_DATA)
-# sys.path.insert(1, PATH_STRATEGY)
-
 
 from Model.model_CIFAR10 import create_model_CIFAR10
-from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, X_train, y_test, y_train
 from Fed.Client.client import Client_Test
 import flwr as fl
 
@@ -41,13 +32,12 @@ if os.environ.get("http_proxy"):
 
 
 def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
+    from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, X_train, y_test, y_train
+
     """Start the server with a slightly adjusted FedAvg strategy."""
     model = create_model_CIFAR10()
     arguments = [model, X_test, y_test, nbr_clients, nbr_rounds]
     server = eval(strategy + "2")(*arguments)
-
-
-from copy import deepcopy
 
 
 def run_CIFAR10(strategy, nbr_clients, nbr_rounds):

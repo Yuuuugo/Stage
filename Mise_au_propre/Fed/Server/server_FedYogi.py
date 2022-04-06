@@ -5,11 +5,6 @@ import flwr as fl
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from flwr.server.strategy import FedYogi
 
-if os.environ.get("https_proxy"):
-    del os.environ["https_proxy"]
-if os.environ.get("http_proxy"):
-    del os.environ["http_proxy"]
-
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 

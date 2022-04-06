@@ -13,18 +13,22 @@ import centralized_Shakespeare """
 
 from Fed.federated_JS import run_JS
 from Fed.federated_CIFAR10 import run_CIFAR10
-
-# from Fed.federated_MNIST import run_MNIST
-
+from Fed.federated_MNIST import run_MNIST
+from Fed.federated_Shakespeare import run_Shakespeare
+from Fed.federated_CIC_IDS2017 import run_CIC_IDS2017
 
 import traceback
 import signal
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-if os.environ.get("https_proxy"):
-    del os.environ["https_proxy"]
-if os.environ.get("http_proxy"):
-    del os.environ["http_proxy"]
+import FLconfig
+
+import time
+
+actual_time = time.ctime()
+actual_time = actual_time.split(" ")
+timed = ""
+for i in actual_time:
+    timed += i + "_"
 
 
 def __signal_code_to_name(code):
@@ -69,7 +73,7 @@ def main() -> None:
     parser.add_argument(
         "--Dataset",
         type=str,
-        choices=["JS", "CIC-IDS_2017", "MovieLens", "CIFAR10", "Shakespeare", "MNIST"],
+        choices=["JS", "CIC_IDS2017", "MovieLens", "CIFAR10", "Shakespeare", "MNIST"],
         required=True,
     )
     parser.add_argument(
@@ -83,7 +87,7 @@ def main() -> None:
     centralized = "centralized_" + args.Dataset + ".run()"
 
     federated = "run_" + args.Dataset
-    arguments = [args.strategy, args.nbr_clients, args.nbr_rounds]
+    arguments = [args.strategy, args.nbr_clients, args.nbr_rounds, timed]
 
     print("-------------------" * 4 + "Start of Centralized" + "-----------------" * 4)
     # eval(centralized)

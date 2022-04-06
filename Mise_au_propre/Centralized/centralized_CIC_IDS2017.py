@@ -2,13 +2,19 @@ import os
 import sys
 import matplotlib.pyplot as plt
 
-PATH_MODEL = "/home/hugo/hugo/Stage/Mise_au_propre/Model/"
-PATH_DATA = "/home/hugo/hugo/Stage/Mise_au_propre/data/data_CIC_IDS2017/"
 
-sys.path.insert(1, PATH_MODEL)
-sys.path.insert(1, PATH_DATA)
+from Model.model_CIC_IDS2017 import create_model_CIC_IDS2017
+from data.data_CIC_IDS2017.experiment import (
+    X_train_centralized,
+    X_test_centralized,
+    y_train_centralized,
+    y_test_centralized,
+)
 
 
-# from model_CIC_IDS2017 import model
+def run():
+    model = create_model_CIC_IDS2017()
 
-# from Preprocessing_CIC_IDS2017 import X_train, X_test, y_train, y_test
+    model.fit(
+        X_train_centralized, y_train_centralized, epochs=3, batch_size=32, verbose=1
+    )

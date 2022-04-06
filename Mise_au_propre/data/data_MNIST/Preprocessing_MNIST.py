@@ -8,5 +8,3 @@ shape = X_train.shape
 
 X_train = tf.reshape(X_train, X_train.shape + (1,))
 X_test = tf.reshape(X_test, X_test.shape + (1,))
-
-print(y_train)
