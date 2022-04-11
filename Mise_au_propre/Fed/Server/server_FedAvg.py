@@ -25,9 +25,9 @@ def get_eval_fn(model2, X_test, y_test):
         # model2.fit(X_test, y_test, epochs=5)
         print("Test evaluate")
         # model2.summary()
-        loss, RMSE = model2.evaluate(X_test, y_test)
+        loss, metrics_used = model2.evaluate(X_test, y_test)
         print("Test after evaluate")
-        return loss, {"RMSE": RMSE}  # ,loss ( not really needed )
+        return loss, {"other metrics": metrics_used}  # ,loss ( not really needed )
 
     return evaluate
 

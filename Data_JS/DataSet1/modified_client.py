@@ -152,7 +152,7 @@ def main() -> None:
 
     # Start Flower client
     client = Client(model, x_train, y_train, x_test, y_test, arg=args.partition)
-    fl.client.start_numpy_client("[::]:8080", client=client)
+    fl.client.start_numpy_client("90.84.246.40:8080", client=client)
 
 
 def load_partition(idx: int):

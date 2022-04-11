@@ -32,6 +32,7 @@ def run_JS(strategy, nbr_clients, nbr_rounds, timed):
     )
     server_process.start()
     process.append(server_process)
+    print("Server Started ig")
     time.sleep(2)
 
     print("After start")

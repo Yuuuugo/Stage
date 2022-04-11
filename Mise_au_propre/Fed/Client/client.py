@@ -52,6 +52,7 @@ class Client_Test(fl.client.NumPyClient):
             batch_size=32,
             steps_per_epoch=3,
             callbacks=[CALLBACK],
+            verbose=1,
         )
         return self.model.get_weights(), len(self.X_train), {}
 

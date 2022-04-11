@@ -14,12 +14,6 @@ from Fed.Server.server_FedYogi import FedYogi2
 from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
-if os.environ.get("https_proxy"):
-    del os.environ["https_proxy"]
-if os.environ.get("http_proxy"):
-    del os.environ["http_proxy"]
-
-
 def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
 
     """Start the server with a slightly adjusted FedAvg strategy."""
@@ -38,6 +32,7 @@ def run_MNIST(strategy, nbr_clients, nbr_rounds, timed):
     )
     server_process.start()
     process.append(server_process)
+    print("Server Started ig")
     time.sleep(2)
 
     print("After start")
@@ -57,7 +52,7 @@ def run_MNIST(strategy, nbr_clients, nbr_rounds, timed):
 
 
 def start_client(i, timed):
-    from data.data_MNIST.Preprocessing_MNIST import X_train, y_train, X_test, y_test
+    from data.data_MNIST.Preprocessing_MNIST import X_train, X_test, y_train, y_test
 
     print("Launching of client" + str(i))
     # Start Flower client

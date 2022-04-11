@@ -2,14 +2,21 @@ import threading
 import os
 import sys
 import argparse
-from subprocess import call
 
 PATH = os.getcwd()
 """ sys.path.append(PATH + "/Centralized")
 import centralized_JS
 import centralized_CIC_IDS2017
 import centralized_MovieLens
+
 import centralized_Shakespeare """
+from Centralized.centralized_JS import run_centralized_JS
+from Centralized.centralized_CIFAR10 import run_centralized_CIFAR10
+from Centralized.centralized_MNIST import run_centralized_MNIST
+from Centralized.centralized_CIC_IDS2017 import run_centralized_CIC_IDS2017
+
+# from Centralized.centralized_Shakespeare import
+
 
 from Fed.federated_JS import run_JS
 from Fed.federated_CIFAR10 import run_CIFAR10
@@ -84,13 +91,13 @@ def main() -> None:
     )
     args = parser.parse_args()
     # print(args.Dataset)
-    centralized = "centralized_" + args.Dataset + ".run()"
+    centralized = "run_centralized_" + args.Dataset
 
     federated = "run_" + args.Dataset
     arguments = [args.strategy, args.nbr_clients, args.nbr_rounds, timed]
 
     print("-------------------" * 4 + "Start of Centralized" + "-----------------" * 4)
-    # eval(centralized)
+    # eval(centralized)(args.nbr_rounds)
     print("-------------------" * 4 + "Start of Federated" + "-----------------" * 4)
     eval(federated)(*arguments)
 
