@@ -4,7 +4,7 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
-os.environ["https_proxy"] = "http://proxy.rd.francetelecom.fr:8080 "
+os.environ["https_proxy"] = "http://proxy.rd.francetelecom.fr:8080"
 
 os.environ["http_proxy"] = os.environ["https_proxy"]
 

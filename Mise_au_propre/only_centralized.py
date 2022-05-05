@@ -1,3 +1,3 @@
-from Centralized.centralized_MNIST import run
+from Centralized.centralized_DisasterTweets import run_centralized_DisasterTweets
 
-# run()
+run_centralized_DisasterTweets(3)

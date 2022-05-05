@@ -1,10 +1,6 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-
-
-nb_client = 10
-nb_rounds = 10
+from sklearn.model_selection import train_test_split
 
 
 def Data():
@@ -29,9 +25,10 @@ def Data():
     array = np.asarray(df)
     array = array.reshape([27572, 62, 9, 1])
 
-    X_train, X_test, y_train, y_test = array[3446:], array[:3446], y[3446:], y[:3446]
-
+    # X_train, X_test, y_train, y_test = array[3446:], array[:3446], y[3446:], y[:3446]
+    X_train, X_test, y_train, y_test = train_test_split(array, y, test_size=0.1)
     return X_train, X_test, y_train, y_test
 
 
 X_train, X_test, y_train, y_test = Data()
+print("Test_JS")

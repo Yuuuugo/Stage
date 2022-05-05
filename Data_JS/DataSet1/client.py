@@ -40,7 +40,7 @@ class Client(fl.client.NumPyClient):
         # Get hyperparameters for this round
         batch_size: int = config["batch_size"]
         epochs: int = config["local_epochs"]
-        actual_rnd : int = config["rnd"]
+        actual_rnd: int = config["rnd"]
 
         # Train the model using hyperparameters from config
         history = self.model.fit(
@@ -64,7 +64,7 @@ class Client(fl.client.NumPyClient):
 
     def evaluate(self, parameters, config):
         """Evaluate parameters on the locally held test set."""
-
+        print("looooooooool")
         # Update local model with global parameters
         self.model.set_weights(parameters)
 
@@ -72,9 +72,15 @@ class Client(fl.client.NumPyClient):
         steps: int = config["val_steps"]
 
         # Evaluate global model parameters on the local test data and return results
-        loss, root_mean_squared_error = self.model.evaluate(self.x_test, self.y_test, 32, steps=steps)
+        loss, root_mean_squared_error = self.model.evaluate(
+            self.x_test, self.y_test, 32, steps=steps
+        )
         num_examples_test = len(self.x_test)
-        return loss, num_examples_test, {"root_mean_squared_error": root_mean_squared_error}
+        return (
+            loss,
+            num_examples_test,
+            {"root_mean_squared_error": root_mean_squared_error},
+        )
 
 
 def main() -> None:
@@ -84,19 +90,23 @@ def main() -> None:
     args = parser.parse_args()
 
     # Load and compile Keras model
-    model = tf.keras.Sequential([
-    layers.Flatten(input_shape = (62,9)),
-    layers.Dense( units = 52, activation = 'relu'),
-    layers.Dense( units = 128, activation= 'relu' ),
-    layers.Dense( units = 512, activation = 'relu'),
-    layers.Dense( units = 7, activation= 'linear')
-    ])
+    model = tf.keras.Sequential(
+        [
+            layers.Flatten(input_shape=(62, 9)),
+            layers.Dense(units=52, activation="relu"),
+            layers.Dense(units=128, activation="relu"),
+            layers.Dense(units=512, activation="relu"),
+            layers.Dense(units=7, activation="linear"),
+        ]
+    )
 
     model.compile(
-        loss='mean_squared_error' , 
-        optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.01,clipvalue=1), # clip value important to solve exploding gradient problem
-        metrics=[tf.keras.metrics.RootMeanSquaredError()]
-        )
+        loss="mean_squared_error",
+        optimizer=tf.keras.optimizers.RMSprop(
+            learning_rate=0.01, clipvalue=1
+        ),  # clip value important to solve exploding gradient problem
+        metrics=[tf.keras.metrics.RootMeanSquaredError()],
+    )
 
     # Load a subset of CIFAR-10 to simulate the local data partition
     (x_train, y_train), (x_test, y_test) = load_partition(args.partition)
@@ -106,21 +116,22 @@ def main() -> None:
     fl.client.start_numpy_client("[::]:8080", client=client)
 
 
-
 def load_partition(idx: int):
     """Load 1/10th of the training and test data to simulate a partition."""
     assert idx in range(nb_client)
     x_train, x_test, y_train, y_test = Data()
     return (
-        x_train[ (idx//nb_client) * len(x_train) : ((idx//nb_client) + 1) * len(x_train)],
-        y_train[(idx//nb_client) * len(x_train) : ((idx//nb_client) + 1) * len(x_train)],
+        x_train[
+            (idx // nb_client) * len(x_train) : ((idx // nb_client) + 1) * len(x_train)
+        ],
+        y_train[
+            (idx // nb_client) * len(x_train) : ((idx // nb_client) + 1) * len(x_train)
+        ],
     ), (
-        x_test,#[(idx//nb_client) * len(x_test) : ((idx//nb_client) + 1) * len(x_test)],
-        y_test,#[(idx//nb_client) * len(x_test) : ((idx//nb_client) + 1) * len(x_test)],
+        x_test,  # [(idx//nb_client) * len(x_test) : ((idx//nb_client) + 1) * len(x_test)],
+        y_test,  # [(idx//nb_client) * len(x_test) : ((idx//nb_client) + 1) * len(x_test)],
     )
 
 
 if __name__ == "__main__":
     main()
-
-

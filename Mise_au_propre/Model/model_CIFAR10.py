@@ -18,10 +18,10 @@ def create_model_CIFAR10():
     x = tf.keras.layers.Dense(units=512, activation="relu")(x)
     output = tf.keras.layers.Dense(units=10, activation="softmax")(x)
 
-    model = tf.keras.Model(inputs=inputs, outputs=output)
-    model.compile(
+    model_CIFAR10 = tf.keras.Model(inputs=inputs, outputs=output)
+    model_CIFAR10.compile(
         loss=tf.keras.losses.SparseCategoricalCrossentropy(),
         optimizer=tf.keras.optimizers.Adam(),
         metrics=[tf.keras.metrics.SparseCategoricalAccuracy()],
     )
-    return model
+    return model_CIFAR10

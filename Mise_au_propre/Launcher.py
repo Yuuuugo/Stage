@@ -1,7 +1,8 @@
-import threading
+from multiprocessing import Process
 import os
 import sys
 import argparse
+
 
 PATH = os.getcwd()
 """ sys.path.append(PATH + "/Centralized")
@@ -14,6 +15,8 @@ from Centralized.centralized_JS import run_centralized_JS
 from Centralized.centralized_CIFAR10 import run_centralized_CIFAR10
 from Centralized.centralized_MNIST import run_centralized_MNIST
 from Centralized.centralized_CIC_IDS2017 import run_centralized_CIC_IDS2017
+from Centralized.centralized_Shakespeare import run_centralized_Shakespeare
+from Centralized.centralized_DisasterTweets import run_centralized_DisasterTweets
 
 # from Centralized.centralized_Shakespeare import
 
@@ -23,6 +26,7 @@ from Fed.federated_CIFAR10 import run_CIFAR10
 from Fed.federated_MNIST import run_MNIST
 from Fed.federated_Shakespeare import run_Shakespeare
 from Fed.federated_CIC_IDS2017 import run_CIC_IDS2017
+from Fed.federated_DisasterTweets import run_DisasterTweets
 
 import traceback
 import signal
@@ -53,14 +57,14 @@ def signal_handler(sig, frame):
 
 
 def main() -> None:
-    if threading.current_thread() == threading.main_thread():
-        for sig in signal.Signals:
-            try:
-                if sig.name == "SIGCHLD":
-                    continue
-                signal.signal(sig, signal_handler)
-            except OSError:
-                print(("Skipping signal", sig))
+    """if threading.current_thread() == threading.main_thread():
+    for sig in signal.Signals:
+        try:
+            if sig.name == "SIGCHLD":
+                continue
+            signal.signal(sig, signal_handler)
+        except OSError:
+            print(("Skipping signal", sig))"""
 
     # Parse command line argument `partition`
     parser = argparse.ArgumentParser(description="Flower")
@@ -80,7 +84,15 @@ def main() -> None:
     parser.add_argument(
         "--Dataset",
         type=str,
-        choices=["JS", "CIC_IDS2017", "MovieLens", "CIFAR10", "Shakespeare", "MNIST"],
+        choices=[
+            "JS",
+            "CIC_IDS2017",
+            "MovieLens",
+            "CIFAR10",
+            "Shakespeare",
+            "MNIST",
+            "DisasterTweets",
+        ],
         required=True,
     )
     parser.add_argument(
@@ -97,7 +109,12 @@ def main() -> None:
     arguments = [args.strategy, args.nbr_clients, args.nbr_rounds, timed]
 
     print("-------------------" * 4 + "Start of Centralized" + "-----------------" * 4)
-    # eval(centralized)(args.nbr_rounds)
+    """ centralized_process = Process(
+        target=eval(centralized),
+        args=(args.nbr_rounds,),
+    )
+    centralized_process.start()
+    centralized_process.join() """
     print("-------------------" * 4 + "Start of Federated" + "-----------------" * 4)
     eval(federated)(*arguments)
 

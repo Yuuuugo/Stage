@@ -1,31 +1,31 @@
-import os
 from multiprocessing import Process
 
 import flwr as fl
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from flwr.server.strategy import FedAvg
+import matplotlib.pyplot as plt
 
-
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+list_metrics = []
 
 
 def get_eval_fn(model2, X_test, y_test):
     """Return an evaluation function for server-side evaluation."""
 
     # Load data and model2 here to avoid the overhead of doing it in `evaluate` itself
-
     # Use the last 5k training examples as a validation set
 
     # The `evaluate` function will be called after every round
+
     def evaluate(
         weights: fl.common.Weights,
     ) -> Optional[Tuple[float, Dict[str, fl.common.Scalar]]]:
 
         model2.set_weights(weights)  # Update model2 with the latest parameters
-        # model2.fit(X_test, y_test, epochs=5)
         print("Test evaluate")
         # model2.summary()
+        # model2.fit(X_test, y_test, epochs=5)
         loss, metrics_used = model2.evaluate(X_test, y_test)
+        list_metrics.append(metrics_used)
         print("Test after evaluate")
         return loss, {"other metrics": metrics_used}  # ,loss ( not really needed )
 
@@ -77,11 +77,16 @@ class FedAvg2(Process):
             eval_fn=get_eval_fn(self.model, self.X_test, self.y_test),
             on_fit_config_fn=fit_config,
             on_evaluate_config_fn=evaluate_config,
-            initial_parameters=fl.common.weights_to_parameters(
-                self.model.get_weights()
-            ),
         )
+        """ initial_parameters=fl.common.weights_to_parameters(
+                self.model.get_weights()
+            ), """  # Add it maybe
         print("Before server")
         fl.server.start_server(
             "[::]:8080", config={"num_rounds": self.nbr_rounds}, strategy=strategy
         )
+        print("test")
+        print(list_metrics)
+        round = [i for i in range(len(list_metrics))]
+        plt.plot(round, list_metrics)
+        plt.show()

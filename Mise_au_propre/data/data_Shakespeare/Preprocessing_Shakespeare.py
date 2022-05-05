@@ -21,6 +21,8 @@ text_as_int = np.array([char2idx[c] for c in text])
 
 # Create training examples / targets
 char_dataset = tf.data.Dataset.from_tensor_slices(text_as_int)
+
+print(text_as_int[0])
 # for i in char_dataset.take(5):
 #   print(i.numpy())
 seq_length = 100  # The max. length for single input
@@ -41,5 +43,3 @@ BUFFER_SIZE = 10000  # TF shuffles the data only within buffers
 BATCH_SIZE = 64  # Batch size
 
 dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
-
-print(dataset)

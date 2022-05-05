@@ -23,6 +23,7 @@ def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
 
 
 def run_CIC_IDS2017(strategy, nbr_clients, nbr_rounds, timed):
+    from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
     from data.data_CIC_IDS2017.Preprocessing_CIC_IDS2017 import (
         X_test_centralized,
         y_test_centralized,

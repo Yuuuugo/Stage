@@ -13,17 +13,22 @@ from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
 def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
-    from Model.model_CIFAR10 import create_model_CIFAR10
-    from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, y_test
+    from Model.model_DisasterTweets import create_model_DisasterTweets
+    from data.data_DisasterTweets.Preprocessing_DisasterTweets import X_test, y_test
 
     """Start the server with a slightly adjusted FedAvg strategy."""
-    model = create_model_CIFAR10()
+    model = create_model_DisasterTweets()
     arguments = [model, X_test, y_test, nbr_clients, nbr_rounds]
     server = eval(strategy + "2")(*arguments)
 
 
-def run_CIFAR10(strategy, nbr_clients, nbr_rounds, timed):
-    from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, X_train, y_test, y_train
+def run_DisasterTweets(strategy, nbr_clients, nbr_rounds, timed):
+    from data.data_DisasterTweets.Preprocessing_DisasterTweets import (
+        X_test,
+        X_train,
+        y_test,
+        y_train,
+    )
 
     process = []
     # model2 = deepcopy(create_model_JS()) Bug
@@ -34,7 +39,7 @@ def run_CIFAR10(strategy, nbr_clients, nbr_rounds, timed):
     # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
     process.append(server_process)
-    time.sleep(5)
+    time.sleep(2)
 
     print("After start")
     for i in range(nbr_clients):
@@ -54,8 +59,13 @@ def run_CIFAR10(strategy, nbr_clients, nbr_rounds, timed):
 
 
 def start_client(i, timed, nbr_clients):
-    from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, X_train, y_test, y_train
-    from Model.model_CIFAR10 import create_model_CIFAR10
+    from data.data_DisasterTweets.Preprocessing_DisasterTweets import (
+        X_test,
+        X_train,
+        y_test,
+        y_train,
+    )
+    from Model.model_DisasterTweets import create_model_DisasterTweets
 
     X_train[
         int((i / nbr_clients) * len(X_train)) : int(
@@ -70,7 +80,7 @@ def start_client(i, timed, nbr_clients):
 
     print("Launching of client" + str(i))
     # Start Flower client
-    model = create_model_CIFAR10()
+    model = create_model_DisasterTweets()
     client = Client_Test(
         model=model,
         X_train=X_train,

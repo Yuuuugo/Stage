@@ -4,7 +4,6 @@ import time
 
 from multiprocessing import Process
 
-from Model.model_JS import create_model_JS
 
 from Fed.Client.client import Client_Test
 import flwr as fl
@@ -15,15 +14,15 @@ from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
 def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
+    from Model.model_JS import create_model_JS
 
-    """Start the server with a slightly adjusted FedAvg strategy."""
     model = create_model_JS()
     arguments = [model, X_test, y_test, nbr_clients, nbr_rounds]
     server = eval(strategy + "2")(*arguments)
 
 
 def run_JS(strategy, nbr_clients, nbr_rounds, timed):
-    from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
+    from data.data_JS.Preprocessing_JS import X_test, y_test
 
     process = []
     server_process = Process(
@@ -42,6 +41,7 @@ def run_JS(strategy, nbr_clients, nbr_rounds, timed):
             args=(
                 i,
                 timed,
+                nbr_clients,
             ),
         )
         Client_i.start()
@@ -51,8 +51,20 @@ def run_JS(strategy, nbr_clients, nbr_rounds, timed):
         p.join()
 
 
-def start_client(i, timed):
+def start_client(i, timed, nbr_clients):
     from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
+    from Model.model_JS import create_model_JS
+
+    X_train[
+        int((i / nbr_clients) * len(X_train)) : int(
+            ((i + 1) / nbr_clients) * len(X_train)
+        )
+    ],
+    y_train[
+        int((i / nbr_clients) * len(y_train)) : int(
+            ((i + 1) / nbr_clients) * len(y_train)
+        )
+    ],  # So each client have a different dataset to train on
 
     print("Launching of client" + str(i))
     # Start Flower client
