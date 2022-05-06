@@ -12,7 +12,7 @@ from Fed.Server.server_FedYogi import FedYogi2
 from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
-def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
+def start_server(strategy, nbr_clients, nbr_rounds):
     from Model.model_MNIST import create_model_MNIST
     from data.data_MNIST.Preprocessing_MNIST import X_test, y_test
 
@@ -23,22 +23,17 @@ def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
 
 
 def run_MNIST(strategy, nbr_clients, nbr_rounds, timed):
-    from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
-
-    """ I dont understand why this is needed -> If I delete this line it will not works eventhough
-    it"s not even a dependanct goal"""
-    # from data.data_MNIST.Preprocessing_MNIST import X_test, X_train, y_test, y_train
 
     process = []
     # model2 = deepcopy(create_model_JS()) Bug
     server_process = Process(
         target=start_server,
-        args=(strategy, X_test, y_test, nbr_clients, nbr_rounds),
+        args=(strategy, nbr_clients, nbr_rounds),
     )
     # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
     process.append(server_process)
-    time.sleep(2)
+    time.sleep(5)
 
     print("After start")
     for i in range(nbr_clients):

@@ -1,8 +1,8 @@
-import tensorflow as tf
-
-
 def create_model_DisasterTweets():
-    from data.data_DisasterTweets.Preprocessing_DisasterTweets import X_train
+    import tensorflow as tf
+    from data.data_DisasterTweets.Preprocessing_DisasterTweets import (
+        X_train,
+    )
 
     max_vocab_length = 10000
     max_length = 15

@@ -12,7 +12,7 @@ from Fed.Server.server_FedYogi import FedYogi2
 from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
-def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
+def start_server(strategy, nbr_clients, nbr_rounds):
     from Model.model_DisasterTweets import create_model_DisasterTweets
     from data.data_DisasterTweets.Preprocessing_DisasterTweets import X_test, y_test
 
@@ -23,23 +23,17 @@ def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
 
 
 def run_DisasterTweets(strategy, nbr_clients, nbr_rounds, timed):
-    from data.data_DisasterTweets.Preprocessing_DisasterTweets import (
-        X_test,
-        X_train,
-        y_test,
-        y_train,
-    )
 
     process = []
     # model2 = deepcopy(create_model_JS()) Bug
     server_process = Process(
         target=start_server,
-        args=(strategy, X_test, y_test, nbr_clients, nbr_rounds),
+        args=(strategy, nbr_clients, nbr_rounds),
     )
     # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
     process.append(server_process)
-    time.sleep(2)
+    time.sleep(5)
 
     print("After start")
     for i in range(nbr_clients):

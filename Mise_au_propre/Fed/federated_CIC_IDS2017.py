@@ -14,30 +14,39 @@ from Fed.Server.server_FedYogi import FedYogi2
 from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
-def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
+def start_server(
+    strategy,
+    nbr_clients,
+    nbr_rounds,
+    X_test_centralized,
+    y_test_centralized,
+):
+
+    from Model.model_CIC_IDS2017 import create_model_CIC_IDS2017
 
     """Start the server with a slightly adjusted FedAvg strategy."""
     model = create_model_CIC_IDS2017()
-    arguments = [model, X_test, y_test, nbr_clients, nbr_rounds]
+    arguments = [model, X_test_centralized, y_test_centralized, nbr_clients, nbr_rounds]
     server = eval(strategy + "2")(*arguments)
 
 
 def run_CIC_IDS2017(strategy, nbr_clients, nbr_rounds, timed):
-    from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
+
     from data.data_CIC_IDS2017.Preprocessing_CIC_IDS2017 import (
+        Set,
         X_test_centralized,
         y_test_centralized,
-    )
+    )  # Did it this way in order to not load the entire dataset for each client
 
     process = []
     server_process = Process(
         target=start_server,
         args=(
             strategy,
-            X_test_centralized,
-            y_test_centralized,
             nbr_clients,
             nbr_rounds,
+            X_test_centralized,
+            y_test_centralized,
         ),
     )
     server_process.start()
@@ -45,11 +54,15 @@ def run_CIC_IDS2017(strategy, nbr_clients, nbr_rounds, timed):
     time.sleep(2)
 
     for i in range(nbr_clients):
+
         Client_i = Process(
             target=start_client,
             args=(
                 i,
                 timed,
+                Set,
+                X_test_centralized,
+                y_test_centralized,
             ),
         )
         Client_i.start()
@@ -59,19 +72,21 @@ def run_CIC_IDS2017(strategy, nbr_clients, nbr_rounds, timed):
         p.join()
 
 
-def start_client(i, timed):
-    from data.data_CIC_IDS2017.Preprocessing_CIC_IDS2017 import (
-        Set,
-        X_test_centralized,
-        y_test_centralized,
-    )
+def start_client(
+    i,
+    timed,
+    Set,
+    X_test_centralized,
+    y_test_centralized,
+):
+    from Model.model_CIC_IDS2017 import create_model_CIC_IDS2017
 
     model = create_model_CIC_IDS2017()
     client = Client_CIC_IDS2017(
         model=model,
         Set=Set,
-        X_test=X_test_centralized,
-        y_test=y_test_centralized,
+        X_test=X_test_centralized[i],
+        y_test=y_test_centralized[i],
         client_nbr=i,
         timed=timed,
     )
