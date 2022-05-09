@@ -25,9 +25,7 @@ def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
 def run_Shakespeare(strategy, nbr_clients, nbr_rounds, timed):
     from data.data_Shakespeare.Preprocessing_Shakespeare import (
         X_test,
-        X_train,
         y_test,
-        y_train,
     )
 
     process = []

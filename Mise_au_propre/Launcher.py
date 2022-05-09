@@ -27,6 +27,7 @@ from Fed.federated_MNIST import run_MNIST
 from Fed.federated_Shakespeare import run_Shakespeare
 from Fed.federated_CIC_IDS2017 import run_CIC_IDS2017
 from Fed.federated_DisasterTweets import run_DisasterTweets
+from Fed.federated_IMDB import run_IMDB
 
 import traceback
 import signal
@@ -92,6 +93,7 @@ def main() -> None:
             "Shakespeare",
             "MNIST",
             "DisasterTweets",
+            "IMDB",
         ],
         required=True,
     )

@@ -69,7 +69,7 @@ class FedAvg2(Process):
     def run(self):
 
         strategy = fl.server.strategy.FedAvg(
-            fraction_fit=0.3,
+            fraction_fit=0.8,
             fraction_eval=0.2,
             min_fit_clients=self.nbr_clients,
             min_eval_clients=2,

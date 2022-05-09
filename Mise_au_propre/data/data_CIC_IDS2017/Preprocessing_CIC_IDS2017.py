@@ -61,8 +61,6 @@ X_centralized = centralized_df.drop(columns=["Label"])
     y_test_centralized,
 ) = train_test_split(X_centralized, y_centralized, test_size=0.3)
 
-
-print(y_train_centralized)
 # Create the set for the centralized version
 X_train_centralized = np.asarray(X_train_centralized).astype("int32")
 X_test_centralized = np.asarray(X_test_centralized).astype("int32")

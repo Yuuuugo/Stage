@@ -3,12 +3,6 @@ import flwr as fl
 import tensorflow as tf
 
 
-if os.environ.get("https_proxy"):
-    del os.environ["https_proxy"]
-if os.environ.get("http_proxy"):
-    del os.environ["http_proxy"]
-
-
 class Client_CIC_IDS2017(fl.client.NumPyClient):
     def __init__(self, model, Set, X_test, y_test, client_nbr, timed):
         self.model = model

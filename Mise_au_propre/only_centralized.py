@@ -1,3 +1,3 @@
-from Centralized.centralized_DisasterTweets import run_centralized_DisasterTweets
+from Centralized.centralized_IMDB import run_centralized_IMDB
 
-run_centralized_DisasterTweets(3)
+run_centralized_IMDB(3)

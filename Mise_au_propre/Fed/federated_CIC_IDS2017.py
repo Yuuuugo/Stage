@@ -84,7 +84,7 @@ def start_client(
     model = create_model_CIC_IDS2017()
     client = Client_CIC_IDS2017(
         model=model,
-        Set=Set,
+        Set=Set[i],  # Set for the i-th client
         X_test=X_test_centralized[i],
         y_test=y_test_centralized[i],
         client_nbr=i,
