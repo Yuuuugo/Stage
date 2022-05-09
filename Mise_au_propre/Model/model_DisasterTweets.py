@@ -9,7 +9,7 @@
         max_tokens=max_vocab_length,
         output_mode="int",
         output_sequence_length=max_length,
-    )
+    )gio
 
     # Fit the text vectorizer to the training text
     text_vectorizer.adapt(X_train)
@@ -47,7 +47,6 @@ import tensorflow as tf
 import tensorflow_text as text
 from official.nlp import optimization  # to create AdamW optimizer
 
-from data.data_DisasterTweets.Preprocessing_DisasterTweets import X_train
 
 bert_model_name = "small_bert/bert_en_uncased_L-4_H-512_A-8"
 
