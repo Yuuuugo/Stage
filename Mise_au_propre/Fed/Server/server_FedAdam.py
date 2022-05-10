@@ -1,12 +1,9 @@
-import os
 from multiprocessing import Process
 
 import flwr as fl
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from flwr.server.strategy import FedAdam
 import matplotlib.pyplot as plt
-
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 list_metrics = []
 
@@ -15,10 +12,10 @@ def get_eval_fn(model2, X_test, y_test):
     """Return an evaluation function for server-side evaluation."""
 
     # Load data and model2 here to avoid the overhead of doing it in `evaluate` itself
-
     # Use the last 5k training examples as a validation set
 
     # The `evaluate` function will be called after every round
+
     def evaluate(
         weights: fl.common.Weights,
     ) -> Optional[Tuple[float, Dict[str, fl.common.Scalar]]]:
@@ -66,13 +63,13 @@ class FedAdam2(Process):
         self.nbr_clients = nbr_clients
         self.nbr_rounds = nbr_rounds
         self.model = model2
-        # self.model = create_model_JS()
+        # self.client_nbr = client_nbr
         self.run()
 
     def run(self):
 
         strategy = fl.server.strategy.FedAdam(
-            fraction_fit=0.3,
+            fraction_fit=1,
             fraction_eval=0.2,
             min_fit_clients=self.nbr_clients,
             min_eval_clients=2,
@@ -84,6 +81,7 @@ class FedAdam2(Process):
                 self.model.get_weights()
             ),
         )
+        # Add it maybe
         print("Before server")
         fl.server.start_server(
             "[::]:8080", config={"num_rounds": self.nbr_rounds}, strategy=strategy
