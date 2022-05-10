@@ -1,5 +1,5 @@
 *.csv
 *.pyc
 *.swp
-*.txt
-*.gz
+/Mise_au_propre/data/data_IMDB/aclImd/
+b*.gz
