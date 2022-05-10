@@ -73,21 +73,21 @@ def main() -> None:
     parser.add_argument(
         "--nbr_clients",
         type=int,
-        choices=range(1, 100),
+        choices=range(1, 101),
         required=True,
     )
     parser.add_argument(
         "--nbr_rounds",
         type=int,
-        choices=range(1, 100),
+        choices=range(1, 101),
         required=True,
     )
     parser.add_argument(
         "--Dataset",
         type=str,
         choices=[
-            "JS",
-            "CIC_IDS2017",
+            "JS" , # Cannot do with mac
+            "CIC_IDS2017", # Cannot do with mac
             "MovieLens",
             "CIFAR10",
             "Shakespeare",

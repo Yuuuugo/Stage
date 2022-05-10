@@ -2,7 +2,7 @@ import flwr as fl
 import tensorflow as tf
 import os
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 # from Launcher import timed
 
@@ -55,7 +55,7 @@ class Client_Test(fl.client.NumPyClient):
             self.y_train,
             epochs=1,
             batch_size=32,
-            steps_per_epoch=3,
+	    steps_per_epoch =  int( np.ceil(self.X_train.shape[0] /32) ),
             # callbacks=[CALLBACK],
             verbose=1,
         )

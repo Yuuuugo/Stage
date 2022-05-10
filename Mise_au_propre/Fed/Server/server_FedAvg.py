@@ -88,5 +88,8 @@ class FedAvg2(Process):
         print("test")
         print(list_metrics)
         round = [i for i in range(len(list_metrics))]
+        plt.xlabel("rounds")
+        plt.ylabel("Accuracy")
+        plt.figtext(0.8, 0.8, "nbr of clients : " + str(self.nbr_clients))
         plt.plot(round, list_metrics)
         plt.show()

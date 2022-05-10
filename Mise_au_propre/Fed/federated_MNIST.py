@@ -56,16 +56,18 @@ def start_client(i, timed, nbr_clients):
     from data.data_MNIST.Preprocessing_MNIST import X_test, X_train, y_test, y_train
     from Model.model_MNIST import create_model_MNIST
 
-    X_train[
+    X_train = X_train[
         int((i / nbr_clients) * len(X_train)) : int(
             ((i + 1) / nbr_clients) * len(X_train)
         )
-    ],
-    y_train[
-        int((i / nbr_clients) * len(y_train)) : int(
-            ((i + 1) / nbr_clients) * len(y_train)
-        )
-    ],  # So each client have a different dataset to train on
+    ]
+    y_train = (
+        y_train[
+            int((i / nbr_clients) * len(y_train)) : int(
+                ((i + 1) / nbr_clients) * len(y_train)
+            )
+        ],
+    )  # So each client have a different dataset to train on
 
     print("Launching of client" + str(i))
     # Start Flower client

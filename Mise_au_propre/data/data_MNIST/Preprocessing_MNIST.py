@@ -16,3 +16,4 @@ def Data():
 
 
 X_train, X_test, y_train, y_test = Data()
+print("Len of MNIST with batch size of 32= " + str(len(X_train)/32))

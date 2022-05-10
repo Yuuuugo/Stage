@@ -7,10 +7,10 @@ import pandas as pd
 
 
 import matplotlib.pyplot as plt
+import pathlib
 
 tf.get_logger().setLevel("ERROR")
-
-
+PATH = pathlib.Path(__file__).parent.resolve() 
 url = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
 
 dataset = tf.keras.utils.get_file(
@@ -25,11 +25,11 @@ train_dir = os.path.join(dataset_dir, "train")
 # remove_dir = os.path.join(train_dir, "unsup")
 # shutil.rmtree(remove_dir)
 
-pos_train_folder = (
-    "/home/hugo/hugo/Stage/Mise_au_propre/data/data_IMDB/aclImdb/train/pos/"
+pos_train_folder = ( PATH + 
+    "/aclImdb/train/pos/"
 )
-neg_train_folder = (
-    "/home/hugo/hugo/Stage/Mise_au_propre/data/data_IMDB/aclImdb/train/neg/"
+neg_train_folder = ( PATH + 
+    "/aclImdb/train/neg/"
 )
 
 
@@ -64,11 +64,11 @@ def Data():
     X_test = []
     y_test = []
 
-    pos_test_folder = (
-        "/home/hugo/hugo/Stage/Mise_au_propre/data/data_IMDB/aclImdb/test/pos/"
+    pos_test_folder = ( PATH +
+        "/aclImdb/test/pos/"
     )
-    neg_test_folder = (
-        "/home/hugo/hugo/Stage/Mise_au_propre/data/data_IMDB/aclImdb/test/neg/"
+    neg_test_folder = (PATH + 
+        "aclImdb/test/neg/"
     )
 
     for filename in os.listdir(pos_test_folder):
