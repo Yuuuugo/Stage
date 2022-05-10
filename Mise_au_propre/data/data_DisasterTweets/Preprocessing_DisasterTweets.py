@@ -1,13 +1,13 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-
+import tensorflow as tf
 
 def Data():
 
     train_df = pd.read_csv(
-        "/home/hugo/hugo/Stage/Mise_au_propre/data/data_DisasterTweets/train.csv"
-    )
+	"/Users/hugo/Stage/Stage/Mise_au_propre/data/data_DisasterTweets/train.csv"    
+)
     # Shuffling the training dataframe
     train_df_shuffled = train_df.sample(frac=1, random_state=42)
 
@@ -28,5 +28,7 @@ def Data():
         y_test,
     )
 
-
 X_train, X_test, y_train, y_test = Data()
+
+X_train = tf.convert_to_tensor(X_train)
+X_test = tf.convert_to_tensor(X_test)

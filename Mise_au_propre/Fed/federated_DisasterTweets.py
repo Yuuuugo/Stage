@@ -1,11 +1,9 @@
 #!/usr/bin/python3
-import time
 from multiprocessing import Process
-
-
-from Fed.Client.client import Client_Test
+import time
 import flwr as fl
 
+from Fed.Client.client import Client_Test
 from Fed.Server.server_FedAvg import FedAvg2
 from Fed.Server.server_FedAdam import FedAdam2
 from Fed.Server.server_FedYogi import FedYogi2
@@ -23,7 +21,6 @@ def start_server(strategy, nbr_clients, nbr_rounds):
 
 
 def run_DisasterTweets(strategy, nbr_clients, nbr_rounds, timed):
-
     process = []
     # model2 = deepcopy(create_model_JS()) Bug
     server_process = Process(
