@@ -73,21 +73,21 @@ def main() -> None:
     parser.add_argument(
         "--nbr_clients",
         type=int,
-        choices=range(1, 100),
+        choices=range(1, 101),
         required=True,
     )
     parser.add_argument(
         "--nbr_rounds",
         type=int,
-        choices=range(1, 100),
+        choices=range(1, 101),
         required=True,
     )
     parser.add_argument(
         "--Dataset",
         type=str,
         choices=[
-            "JS",
-            "CIC_IDS2017",
+            "JS",  # Cannot do with mac
+            "CIC_IDS2017",  # Cannot do with mac
             "MovieLens",
             "CIFAR10",
             "Shakespeare",
@@ -111,14 +111,22 @@ def main() -> None:
     arguments = [args.strategy, args.nbr_clients, args.nbr_rounds, timed]
 
     print("-------------------" * 4 + "Start of Centralized" + "-----------------" * 4)
-    """ centralized_process = Process(
+
+    start_centralized = time.time()
+    centralized_process = Process(
         target=eval(centralized),
         args=(args.nbr_rounds,),
     )
     centralized_process.start()
-    centralized_process.join() """
+    centralized_process.join()
+    end_centralized = time.time()
+    print(f"Runtime of centralized is {end_centralized - start_centralized}")
+
     print("-------------------" * 4 + "Start of Federated" + "-----------------" * 4)
+    start_federated = time.time()
     eval(federated)(*arguments)
+    end_federated = time.time()
+    print(f"Runtime of federated is {end_federated - start_federated}")
 
 
 if __name__ == "__main__":
