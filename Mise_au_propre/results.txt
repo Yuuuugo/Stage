@@ -1,0 +1,5 @@
+MNIST :
+	- NBR_CLIENTS = 5, NBR_EPOCHS = 10 :
+		- CENTRALIZED : Accuracy = 	TIME_DONE =
+		- FEDERATED : Accuracy = 	TIME_DONE = 
+
