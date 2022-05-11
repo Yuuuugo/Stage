@@ -75,7 +75,7 @@ class FedYogi2(Process):
             fraction_fit=1,
             fraction_eval=0.2,
             min_fit_clients=self.nbr_clients,
-            min_eval_clients=2,
+            min_eval_clients=self.nbr_clients,
             min_available_clients=self.nbr_clients,
             eval_fn=get_eval_fn(self.model, self.X_test, self.y_test),
             on_fit_config_fn=fit_config,
@@ -83,6 +83,10 @@ class FedYogi2(Process):
             initial_parameters=fl.common.weights_to_parameters(
                 self.model.get_weights()
             ),
+	    beta_1 = 0.9,
+  	    beta_2 = 0.99,
+  	    eta = 1.0,
+  	    tau = 0.1,
         )
         print("Before server")
         fl.server.start_server(
