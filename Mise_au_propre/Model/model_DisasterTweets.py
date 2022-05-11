@@ -45,7 +45,6 @@
 import tensorflow_hub as hub
 import tensorflow as tf
 import tensorflow_text as text
-from official.nlp import optimization  # to create AdamW optimizer
 
 
 bert_model_name = "small_bert/bert_en_uncased_L-4_H-512_A-8"
