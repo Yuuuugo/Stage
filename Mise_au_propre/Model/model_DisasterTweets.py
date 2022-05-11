@@ -1,4 +1,4 @@
-""" def create_model_DisasterTweets():
+"""def create_model_DisasterTweets():
 
     import tensorflow as tf
     from data.data_DisasterTweets.Preprocessing_DisasterTweets import X_train
@@ -9,7 +9,7 @@
         max_tokens=max_vocab_length,
         output_mode="int",
         output_sequence_length=max_length,
-    )gio
+    )
 
     # Fit the text vectorizer to the training text
     text_vectorizer.adapt(X_train)
@@ -39,8 +39,8 @@
         metrics=["accuracy"],
     )
 
-    return model_DisasterTweets """
-
+    return model_DisasterTweets
+"""
 
 import tensorflow_hub as hub
 import tensorflow as tf

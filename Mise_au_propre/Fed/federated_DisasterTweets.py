@@ -33,7 +33,7 @@ def run_DisasterTweets(strategy, nbr_clients, nbr_rounds, timed):
     # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
     process.append(server_process)
-    time.sleep(5)
+    time.sleep(10)
 
     print("After start")
     for i in range(nbr_clients):
