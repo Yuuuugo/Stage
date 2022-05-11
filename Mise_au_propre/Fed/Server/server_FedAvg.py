@@ -69,7 +69,7 @@ class FedAvg2(Process):
     def run(self):
 
         strategy = fl.server.strategy.FedAvg(
-            fraction_fit=0.8,
+            fraction_fit=1,
             fraction_eval=0.2,
             min_fit_clients=self.nbr_clients,
             min_eval_clients=2,
@@ -77,10 +77,11 @@ class FedAvg2(Process):
             eval_fn=get_eval_fn(self.model, self.X_test, self.y_test),
             on_fit_config_fn=fit_config,
             on_evaluate_config_fn=evaluate_config,
-        )
-        """ initial_parameters=fl.common.weights_to_parameters(
+            initial_parameters=fl.common.weights_to_parameters(
                 self.model.get_weights()
-            ), """  # Add it maybe
+            ),
+        )
+        # Add it maybe
         print("Before server")
         fl.server.start_server(
             "[::]:8080", config={"num_rounds": self.nbr_rounds}, strategy=strategy
@@ -88,5 +89,8 @@ class FedAvg2(Process):
         print("test")
         print(list_metrics)
         round = [i for i in range(len(list_metrics))]
+        plt.xlabel("rounds")
+        plt.ylabel("Accuracy")
+        plt.figtext(0.8, 0.8, "nbr of clients : " + str(self.nbr_clients))
         plt.plot(round, list_metrics)
         plt.show()

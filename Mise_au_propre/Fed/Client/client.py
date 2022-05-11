@@ -49,13 +49,13 @@ class Client_Test(fl.client.NumPyClient):
             embeddings_freq=0,
             embeddings_metadata=None,
         ) """
-
+        batch_size = 32
         self.model.fit(
             self.X_train,  # A modifier afin de fit pas sur les memes donnes (le client genere des donnes sucessivent)
             self.y_train,
             epochs=1,
-            batch_size=32,
-            steps_per_epoch=3,
+            batch_size=batch_size,
+            steps_per_epoch=int(len(self.X_train[0]) / batch_size),
             # callbacks=[CALLBACK],
             verbose=1,
         )

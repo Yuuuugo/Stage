@@ -4,8 +4,11 @@ from multiprocessing import Process
 import flwr as fl
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from flwr.server.strategy import FedYogi
+import matplotlib.pyplot as plt
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
+list_metrics = []
 
 
 def get_eval_fn(model2, X_test, y_test):
@@ -21,13 +24,13 @@ def get_eval_fn(model2, X_test, y_test):
     ) -> Optional[Tuple[float, Dict[str, fl.common.Scalar]]]:
 
         model2.set_weights(weights)  # Update model2 with the latest parameters
-        # model2.fit(X_test, y_test, epochs=5)
         print("Test evaluate")
         # model2.summary()
-        loss = model2.evaluate(X_test, y_test)
+        # model2.fit(X_test, y_test, epochs=5)
+        loss, metrics_used = model2.evaluate(X_test, y_test)
+        list_metrics.append(metrics_used)
         print("Test after evaluate")
-        accuracy = loss
-        return loss, {"accuracy": accuracy}  # ,loss ( not really needed )
+        return loss, {"other metrics": metrics_used}  # ,loss ( not really needed )
 
     return evaluate
 
@@ -69,10 +72,10 @@ class FedYogi2(Process):
     def run(self):
 
         strategy = fl.server.strategy.FedYogi(
-            fraction_fit=0.3,
+            fraction_fit=1,
             fraction_eval=0.2,
             min_fit_clients=self.nbr_clients,
-            min_eval_clients=2,
+            min_eval_clients=self.nbr_clients,
             min_available_clients=self.nbr_clients,
             eval_fn=get_eval_fn(self.model, self.X_test, self.y_test),
             on_fit_config_fn=fit_config,
@@ -80,8 +83,20 @@ class FedYogi2(Process):
             initial_parameters=fl.common.weights_to_parameters(
                 self.model.get_weights()
             ),
+            beta_1=0.9,
+            beta_2=0.99,
+            eta=1.0,
+            tau=0.1,
         )
         print("Before server")
         fl.server.start_server(
             "[::]:8080", config={"num_rounds": self.nbr_rounds}, strategy=strategy
         )
+        print("test")
+        print(list_metrics)
+        round = [i for i in range(len(list_metrics))]
+        plt.xlabel("rounds")
+        plt.ylabel("Accuracy")
+        plt.figtext(0.8, 0.8, "nbr of clients : " + str(self.nbr_clients))
+        plt.plot(round, list_metrics)
+        plt.show()
