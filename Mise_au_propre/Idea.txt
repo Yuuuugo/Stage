@@ -17,4 +17,4 @@ Need to give the metrics used to server and client
 Faire un object Federated
 
 
--> Essayer de faire comme pour CIC_IDS : ne pas charger le dataset entier pour chaque client
+-> Essayer de faire comme pour CIC_IDS : ne pas charger le dataset entier pour chaque client, a appliquer a tout ceux qui ont des donnes lourdes
