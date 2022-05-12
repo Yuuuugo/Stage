@@ -1,7 +1,6 @@
 import tensorflow_hub as hub
 import tensorflow as tf
 import tensorflow_text as text
-from official.nlp import optimization  # to create AdamW optimizer
 
 
 bert_model_name = "small_bert/bert_en_uncased_L-4_H-512_A-8"
@@ -103,7 +102,7 @@ def create_model_IMDB():
 
     classifier_model = build_classifier_model()
 
-    loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+    loss = tf.keras.losses.BinaryCrossentropy()
     metrics = tf.metrics.BinaryAccuracy()
 
     optimizer = tf.keras.optimizers.Adam(learning_rate=3e-5)

@@ -55,7 +55,6 @@ class Client_Test(fl.client.NumPyClient):
             self.y_train,
             epochs=1,
             batch_size=batch_size,
-            steps_per_epoch=int(len(self.X_train[0]) / batch_size),
             # callbacks=[CALLBACK],
             verbose=1,
         )
