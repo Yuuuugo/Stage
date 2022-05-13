@@ -4,11 +4,12 @@ import flwr as fl
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from flwr.server.strategy import FedAvg
 import matplotlib.pyplot as plt
+import pickle
+from flwr.server.client_proxy import ClientProxy
+from flwr.common import EvaluateRes
 
-list_metrics = []
 
-
-def get_eval_fn(model2, X_test, y_test):
+def get_eval_fn(model2, X_test, y_test, list_metrics):
     """Return an evaluation function for server-side evaluation."""
 
     # Load data and model2 here to avoid the overhead of doing it in `evaluate` itself
@@ -25,7 +26,7 @@ def get_eval_fn(model2, X_test, y_test):
         # model2.summary()
         # model2.fit(X_test, y_test, epochs=5)
         loss, metrics_used = model2.evaluate(X_test, y_test)
-        list_metrics.append(metrics_used)
+        list_metrics.append((loss, metrics_used))
         print("Test after evaluate")
         return loss, {"other metrics": metrics_used}  # ,loss ( not really needed )
 
@@ -54,8 +55,8 @@ def evaluate_config(rnd: int):
     return {"val_steps": val_steps}
 
 
-class FedAvg2(Process):
-    def __init__(self, model2, X_test, y_test, nbr_clients, nbr_rounds):
+class FedAvg2(fl.server.strategy.FedAvg, Process):
+    def __init__(self, model2, X_test, y_test, nbr_clients, nbr_rounds, directory_name):
         print("Test init")
         super().__init__()
         self.X_test = X_test
@@ -63,18 +64,19 @@ class FedAvg2(Process):
         self.nbr_clients = nbr_clients
         self.nbr_rounds = nbr_rounds
         self.model = model2
+        self.directory_name = directory_name
         # self.client_nbr = client_nbr
         self.run()
 
     def run(self):
-
+        list_metrics = []
         strategy = fl.server.strategy.FedAvg(
             fraction_fit=1,
             fraction_eval=0.2,
             min_fit_clients=self.nbr_clients,
             min_eval_clients=2,
             min_available_clients=self.nbr_clients,
-            eval_fn=get_eval_fn(self.model, self.X_test, self.y_test),
+            eval_fn=get_eval_fn(self.model, self.X_test, self.y_test, list_metrics),
             on_fit_config_fn=fit_config,
             on_evaluate_config_fn=evaluate_config,
             initial_parameters=fl.common.weights_to_parameters(
@@ -86,11 +88,16 @@ class FedAvg2(Process):
         fl.server.start_server(
             "[::]:8080", config={"num_rounds": self.nbr_rounds}, strategy=strategy
         )
-        print("test")
-        print(list_metrics)
+
+        """ print("test" + str(list_metrics))
         round = [i for i in range(len(list_metrics))]
         plt.xlabel("rounds")
         plt.ylabel("Accuracy")
         plt.figtext(0.8, 0.8, "nbr of clients : " + str(self.nbr_clients))
         plt.plot(round, list_metrics)
-        plt.show()
+        plt.show() """
+
+        # print("test" + str(all_client_metrics))
+        file_name = self.directory_name + "/server"
+        with open(file_name, "wb") as f:
+            pickle.dump(list_metrics, f)

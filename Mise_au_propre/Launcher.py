@@ -31,6 +31,7 @@ from Fed.federated_IMDB import run_IMDB
 
 import traceback
 import signal
+import datetime
 
 import FLconfig
 
@@ -111,12 +112,33 @@ def main() -> None:
     )
     args = parser.parse_args()
     # print(args.Dataset)
+    directory_name = (
+        "results/"
+        + args.Dataset
+        + "_"
+        + args.strategy
+        + "_clients_"
+        + str(args.nbr_clients)
+        + "_rounds"
+        + str(args.nbr_rounds)
+        + "_"
+        + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    )
+    os.mkdir(directory_name)
+
     centralized = "run_centralized_" + args.Dataset
 
     federated = "run_" + args.Dataset
-    arguments = [args.strategy, args.nbr_clients, args.nbr_rounds, timed]
+    arguments = [
+        args.strategy,
+        args.nbr_clients,
+        args.nbr_rounds,
+        timed,
+        directory_name,
+    ]
 
     print("-------------------" * 4 + "Start of Centralized" + "-----------------" * 4)
+
     """
     start_centralized = time.time()
     centralized_process = Process(

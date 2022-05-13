@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 # from Launcher import timed
 client_metrics = []
+actual_rnd = 0
 
 
 class Client_Test(fl.client.NumPyClient):
@@ -26,7 +27,7 @@ class Client_Test(fl.client.NumPyClient):
         self.y_test = y_test
         self.client_nbr = client_nbr
         self.timed = timed
-        # self.Metrics_list = []
+        self.metrics_list = []
 
     def get_parameters(self):
         """Return current weights."""
@@ -39,28 +40,22 @@ class Client_Test(fl.client.NumPyClient):
         # Remove steps_per_epoch if you want to train over the full dataset
         # https://keras.io/api/models/model_training_apis/#fit-method
 
-        """ CALLBACK = tf.keras.callbacks.TensorBoard(
-            log_dir="logs/experiment/" + self.timed + "/Client_" + str(self.client_nbr),
-            histogram_freq=0,
-            write_graph=True,
-            write_images=False,
-            write_steps_per_second=False,
-            update_freq="epoch",
-            profile_batch=0,
-            embeddings_freq=0,
-            embeddings_metadata=None,
-        ) """
         batch_size = 32
-        self.model.fit(
+        training_history = self.model.fit(
             self.X_train,  # A modifier afin de fit pas sur les memes donnes (le client genere des donnes sucessivent)
             self.y_train,
-            epochs=1,
+            epochs=config["local_epochs"],
             batch_size=batch_size,
             # callbacks=[CALLBACK],
-            verbose=1,
+            verbose=0,
         )
-        history = self.model.evaluate(self.X_test, self.y_test)
-        client_metrics.append(history["loss"])
+        testing_history = self.model.evaluate(self.X_test, self.y_test)
+        """print("HISTORYYYYYYYYYYYYYYYYYYYYYYYYYYY")
+        client_metrics[str(actual_rnd)] = (training_history, testing_history)
+        actual_rnd += 1 """
+        self.metrics_list.append(testing_history)
+
+        # client_metrics.append(history["loss"]) #To try if it doesnt work
         # self.evaluate(parameters)
         return self.model.get_weights(), len(self.X_train), {}
 
@@ -74,5 +69,4 @@ class Client_Test(fl.client.NumPyClient):
         # Evaluate global model parameters on the test data
         loss, accuracy = self.model.evaluate(self.X_test, self.y_test)
 
-        # Return results; including the custom accuracy metrics
         return loss, len(self.X_test), {"accuracy": accuracy}

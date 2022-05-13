@@ -80,3 +80,4 @@ def start_client(i, timed, nbr_clients):
         timed=timed,
     )
     fl.client.start_numpy_client("[::]:8080", client=client)
+    print("client number " + str(i) + " metrics" + str(client.metrics_list))

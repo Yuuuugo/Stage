@@ -1,5 +1,24 @@
 import flwr as fl
 from typing import Any, Callable, Dict, List, Optional, Tuple
+from flwr.server.client_proxy import ClientProxy
+from flwr.common import EvaluateRes
+
+
+from flwr.common import (
+    EvaluateIns,
+    EvaluateRes,
+    FitIns,
+    FitRes,
+    MetricsAggregationFn,
+    Parameters,
+    Scalar,
+    Weights,
+    parameters_to_weights,
+    weights_to_parameters,
+)
+from flwr.common.logger import log
+from flwr.server.client_manager import ClientManager
+from flwr.server.client_proxy import ClientProxy
 
 
 def get_eval_fn(model, X_test, y_test):
@@ -47,16 +66,7 @@ def evaluate_config(rnd: int):
     return {"val_steps": val_steps}
 
 
-class AggregateCustomMetricStrategy2(fl.server.strategy.FedAvg):
-    def __init__(self, model, X_test, y_test, nbr_clients, nbr_rounds):
-        print("Test init")
-        super().__init__()
-        self.X_test = X_test
-        self.y_test = y_test
-        self.nbr_clients = nbr_clients
-        self.nbr_rounds = nbr_rounds
-        self.model = model
-
+class AggregateCustomMetricStrategy(fl.server.strategy.FedAvg):
     def aggregate_evaluate(
         self,
         rnd: int,
@@ -82,8 +92,7 @@ class AggregateCustomMetricStrategy2(fl.server.strategy.FedAvg):
 
 
 def run_aggregated_server(nbr_clients, model, X_test, y_test, nbr_rounds):
-
-    strategy = fl.server.strategy.AggregatedCustomMetricsStrategy(
+    strategy = AggregateCustomMetricStrategy(
         fraction_fit=1,
         fraction_eval=0.2,
         min_fit_clients=nbr_clients,
@@ -94,8 +103,6 @@ def run_aggregated_server(nbr_clients, model, X_test, y_test, nbr_rounds):
         on_evaluate_config_fn=evaluate_config,
         initial_parameters=fl.common.weights_to_parameters(model.get_weights()),
     )
-    # Add it maybe
-    print("Before server")
     fl.server.start_server(
         "[::]:8080", config={"num_rounds": nbr_rounds}, strategy=strategy
     )

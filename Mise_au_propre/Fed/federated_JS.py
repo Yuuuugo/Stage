@@ -1,7 +1,8 @@
 #!/usr/bin/python3
+from copyreg import pickle
 import os
 import time
-
+import pickle
 from multiprocessing import Process
 
 
@@ -13,21 +14,21 @@ from Fed.Server.server_FedYogi import FedYogi2
 from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
-def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds):
+def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds, directory_name):
     from Model.model_JS import create_model_JS
 
     model = create_model_JS()
-    arguments = [model, X_test, y_test, nbr_clients, nbr_rounds]
+    arguments = [model, X_test, y_test, nbr_clients, nbr_rounds, directory_name]
     server = eval(strategy + "2")(*arguments)
 
 
-def run_JS(strategy, nbr_clients, nbr_rounds, timed):
+def run_JS(strategy, nbr_clients, nbr_rounds, timed, directory_name):
     from data.data_JS.Preprocessing_JS import X_test, y_test
 
     process = []
     server_process = Process(
         target=start_server,
-        args=(strategy, X_test, y_test, nbr_clients, nbr_rounds),
+        args=(strategy, X_test, y_test, nbr_clients, nbr_rounds, directory_name),
     )
     server_process.start()
     process.append(server_process)
@@ -38,11 +39,7 @@ def run_JS(strategy, nbr_clients, nbr_rounds, timed):
     for i in range(nbr_clients):
         Client_i = Process(
             target=start_client,
-            args=(
-                i,
-                timed,
-                nbr_clients,
-            ),
+            args=(i, timed, nbr_clients, directory_name),
         )
         Client_i.start()
         process.append(Client_i)
@@ -51,7 +48,7 @@ def run_JS(strategy, nbr_clients, nbr_rounds, timed):
         p.join()
 
 
-def start_client(i, timed, nbr_clients):
+def start_client(i, timed, nbr_clients, directory_name):
     from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
     from Model.model_JS import create_model_JS
 
@@ -79,3 +76,7 @@ def start_client(i, timed, nbr_clients):
         timed=timed,
     )
     fl.client.start_numpy_client("[::]:8080", client=client)
+    print("client number " + str(i) + " metrics" + str(client.metrics_list))
+    file_name = directory_name + "/client_number_" + str(i)
+    with open(file_name, "wb") as f:
+        pickle.dump(client.metrics_list, f)
