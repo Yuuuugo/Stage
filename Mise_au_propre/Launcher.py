@@ -100,7 +100,13 @@ def main() -> None:
     parser.add_argument(
         "--strategy",
         type=str,
-        choices=["FedAvg", "FedAdam", "FedAdagrad", "FedYogi"],
+        choices=[
+            "FedAvg",
+            "FedAdam",
+            "FedAdagrad",
+            "FedYogi",
+            "AggregateCustomMetricStrategy",
+        ],
         required=True,
     )
     args = parser.parse_args()

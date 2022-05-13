@@ -1,0 +1,46 @@
+2022-05-12 16:56:53.478113: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory
+2022-05-12 16:56:53.478189: W tensorflow/stream_executor/cuda/cuda_driver.cc:269] failed call to cuInit: UNKNOWN ERROR (303)
+2022-05-12 16:56:53.478216: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: gfraysse-workstation
+2022-05-12 16:56:53.478225: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: gfraysse-workstation
+2022-05-12 16:56:53.478292: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: Not found: was unable to find libcuda.so DSO loaded into this program
+2022-05-12 16:56:53.478337: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 470.103.1
+2022-05-12 16:56:53.478770: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2022-05-12 16:56:55.265638: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+BERT model selected           : https://tfhub.dev/tensorflow/small_bert/bert_en_uncased_L-4_H-512_A-8/1
+Preprocess model auto-selected: https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3
+Traceback (most recent call last):
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2560, in get_attr
+    pywrap_tf_session.TF_OperationGetAttrValueProto(self._c_op, name, buf)
+tensorflow.python.framework.errors_impl.InvalidArgumentError: Operation 'bert/bert_encoder/pooler_transform/Tanh' has no attr named '_gradient_op_type'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "only_centralized.py", line 5, in <module>
+    run_centralized_IMDB(20)
+  File "/home/hugo/hugo/Stage/Mise_au_propre/Centralized/centralized_IMDB.py", line 13, in run_centralized_IMDB
+    model = create_model_IMDB()
+  File "/home/hugo/hugo/Stage/Mise_au_propre/Model/model_IMDB.py", line 103, in create_model_IMDB
+    classifier_model = build_classifier_model()
+  File "/home/hugo/hugo/Stage/Mise_au_propre/Model/model_IMDB.py", line 95, in build_classifier_model
+    tfhub_handle_encoder, trainable=True, name="BERT_encoder"
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow_hub/keras_layer.py", line 153, in __init__
+    self._func = load_module(handle, tags, self._load_options)
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow_hub/keras_layer.py", line 449, in load_module
+    return module_v2.load(handle, tags=tags, options=set_load_options)
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow_hub/module_v2.py", line 106, in load
+    obj = tf.compat.v1.saved_model.load_v2(module_path, tags=tags)
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow/python/saved_model/load.py", line 864, in load
+    result = load_internal(export_dir, tags, options)["root"]
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow/python/saved_model/load.py", line 903, in load_internal
+    ckpt_options, options, filters)
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow/python/saved_model/load.py", line 138, in __init__
+    meta_graph.graph_def.library, wrapper_function=_WrapperFunction))
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow/python/saved_model/function_deserialization.py", line 391, in load_function_def_library
+    _restore_gradient_functions(func_graph, renamed_functions, loaded_gradients)
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow/python/saved_model/function_deserialization.py", line 447, in _restore_gradient_functions
+    gradient_op_type = op.get_attr("_gradient_op_type")
+  File "/home/hugo/anaconda3/envs/env/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 2560, in get_attr
+    pywrap_tf_session.TF_OperationGetAttrValueProto(self._c_op, name, buf)
+KeyboardInterrupt

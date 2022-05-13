@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 
 # from Launcher import timed
+client_metrics = []
 
 
 class Client_Test(fl.client.NumPyClient):
@@ -58,14 +59,20 @@ class Client_Test(fl.client.NumPyClient):
             # callbacks=[CALLBACK],
             verbose=1,
         )
+        history = self.model.evaluate(self.X_test, self.y_test)
+        client_metrics.append(history["loss"])
         # self.evaluate(parameters)
         return self.model.get_weights(), len(self.X_train), {}
 
     # This function seems to not be call
     def evaluate(self, parameters):
         """Evaluate using provided parameters."""
+
+        # Update local model with global parameters
         self.model.set_weights(parameters)
+
+        # Evaluate global model parameters on the test data
         loss, accuracy = self.model.evaluate(self.X_test, self.y_test)
-        # self.Metrics_list = self.Metrics_list.append(accuracy)
-        print("loss = " + str(loss))
+
+        # Return results; including the custom accuracy metrics
         return loss, len(self.X_test), {"accuracy": accuracy}

@@ -46,7 +46,7 @@ MNIST :
 
 IMDB : 
 	- NBR_ROUNDS = 20
-		- CENTRALIZED : Accuracy = | TIME_DONE =
+		- CENTRALIZED : Accuracy = 0.8476| TIME_DONE = 34107.72733044624
 		
 		NBR_CLIENTS = 10
 		- FEDERATED FedAvg: Accuracy =  	TIME_DONE = 
@@ -60,3 +60,6 @@ IMDB :
 		- FEDERATED FedAdam: Accuracy =    TIME_DONE =  
 		- FEDERATED FedAdagrad: Accuracy = 	TIME_DONE = 
 		- FEDERATED FedYogi: Accuracy =  TIME_DONE = 
+
+	- NBR_ROUNDS = 4
+		- - CENTRALIZED : Accuracy = | TIME_DONE = 
