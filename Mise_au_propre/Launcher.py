@@ -17,6 +17,7 @@ from Centralized.centralized_MNIST import run_centralized_MNIST
 from Centralized.centralized_CIC_IDS2017 import run_centralized_CIC_IDS2017
 from Centralized.centralized_Shakespeare import run_centralized_Shakespeare
 from Centralized.centralized_DisasterTweets import run_centralized_DisasterTweets
+from Centralized.centralized_IMDB import run_centralized_IMDB
 
 # from Centralized.centralized_Shakespeare import
 
@@ -139,17 +140,16 @@ def main() -> None:
 
     print("-------------------" * 4 + "Start of Centralized" + "-----------------" * 4)
 
-    """
     start_centralized = time.time()
     centralized_process = Process(
         target=eval(centralized),
-        args=(args.nbr_rounds,directory_name),
+        args=(args.nbr_rounds, directory_name),
     )
     centralized_process.start()
     centralized_process.join()
     end_centralized = time.time()
     print(f"Runtime of centralized is {end_centralized - start_centralized}")
-    """
+
     print("-------------------" * 4 + "Start of Federated" + "-----------------" * 4)
     start_federated = time.time()
     eval(federated)(*arguments)

@@ -1,4 +1,5 @@
 from multiprocessing import Process
+
 import flwr as fl
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from flwr.server.strategy import FedAdagrad
@@ -12,10 +13,10 @@ def get_eval_fn(model2, X_test, y_test, list_metrics):
     """Return an evaluation function for server-side evaluation."""
 
     # Load data and model2 here to avoid the overhead of doing it in `evaluate` itself
+
     # Use the last 5k training examples as a validation set
 
     # The `evaluate` function will be called after every round
-
     def evaluate(
         weights: fl.common.Weights,
     ) -> Optional[Tuple[float, Dict[str, fl.common.Scalar]]]:
@@ -25,7 +26,7 @@ def get_eval_fn(model2, X_test, y_test, list_metrics):
         # model2.summary()
         # model2.fit(X_test, y_test, epochs=5)
         loss, metrics_used = model2.evaluate(X_test, y_test)
-        list_metrics.append(metrics_used)
+        list_metrics.append((loss, metrics_used))
         print("Test after evaluate")
         return loss, {"other metrics": metrics_used}  # ,loss ( not really needed )
 
@@ -63,17 +64,18 @@ class FedAdagrad2(Process):
         self.nbr_clients = nbr_clients
         self.nbr_rounds = nbr_rounds
         self.model = model2
-        self.director_name = directory_name
-        # self.client_nbr = client_nbr
+        self.directory_name = directory_name
+        # self.model = create_model_JS()
         self.run()
 
     def run(self):
+
         list_metrics = []
         strategy = fl.server.strategy.FedAdagrad(
             fraction_fit=1,
-            fraction_eval=1,
+            fraction_eval=0.2,
             min_fit_clients=self.nbr_clients,
-            min_eval_clients=2,
+            min_eval_clients=self.nbr_clients,
             min_available_clients=self.nbr_clients,
             eval_fn=get_eval_fn(self.model, self.X_test, self.y_test, list_metrics),
             on_fit_config_fn=fit_config,
@@ -84,7 +86,6 @@ class FedAdagrad2(Process):
             eta=0.1,
             tau=0.01,
         )
-        # Add it maybe
         print("Before server")
         fl.server.start_server(
             "[::]:8080", config={"num_rounds": self.nbr_rounds}, strategy=strategy
@@ -97,7 +98,6 @@ class FedAdagrad2(Process):
         plt.figtext(0.8, 0.8, "nbr of clients : " + str(self.nbr_clients))
         plt.plot(round, list_metrics)
         plt.show() """
-        print("server " + str(list_metrics))
         file_name = self.directory_name + "/server"
         with open(file_name, "wb") as f:
             pickle.dump(list_metrics, f)

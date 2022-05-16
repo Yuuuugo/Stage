@@ -12,6 +12,11 @@ def run_centralized_CIFAR10(epochs, directory_name):
         batch_size=32,
     )
 
+    dict = history.history
+    for keys in list(dict.keys()):
+        if "val" not in keys:
+            dict.pop(keys)
+
     file_name = directory_name + "/centralized"
     with open(file_name, "wb") as f:
-        pickle.dump(history, f)
+        pickle.dump(dict, f)

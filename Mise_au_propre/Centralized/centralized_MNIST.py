@@ -1,4 +1,5 @@
 def run_centralized_MNIST(epochs, directory_name):
+    import pickle
     from Model.model_MNIST import create_model_MNIST
     from data.data_MNIST.Preprocessing_MNIST import X_train, X_test, y_train, y_test
 
@@ -10,6 +11,12 @@ def run_centralized_MNIST(epochs, directory_name):
         validation_data=(X_test, y_test),
         batch_size=32,
     )
+    list = []
+    for key in list(dict.keys()):
+        if "val" in key and "loss" not in key:
+            for i in range(len(key)):
+                list.append((dict[key][i], dict[key][i]))
+
     file_name = directory_name + "/centralized"
     with open(file_name, "wb") as f:
-        pickle.dump(history, f)
+        pickle.dump(list, f)

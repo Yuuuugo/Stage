@@ -15,7 +15,7 @@ import os
 
 dict = {}
 
-experience_path = "MNIST_FedYogi_clients_5_rounds5_20220513221833"
+experience_path = "JS_FedAdagrad_clients_2_rounds3_20220516170123"
 for root, dirs, files in os.walk(experience_path + "/", topdown=False):
     print(files)
     for filename in files:
@@ -32,6 +32,7 @@ rounds = [i for i in range(len(dict[list(dict.keys())[0]]))]
 
 
 for i in list(dict.keys()):
+    print(i, len(dict[i]))
     list = dict[i]
     y = []
     for elements in list:

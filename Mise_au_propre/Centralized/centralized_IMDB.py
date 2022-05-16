@@ -12,6 +12,11 @@ def run_centralized_IMDB(epochs, directory_name):
     history = model.fit(
         [X_train], y_train, epochs=epochs, validation_data=(X_test, y_test)
     )
+    dict = history.history
+    for keys in list(dict.keys()):
+        if "val" not in keys:
+            dict.pop(keys)
+
     file_name = directory_name + "/centralized"
     with open(file_name, "wb") as f:
-        pickle.dump(history, f)
+        pickle.dump(dict, f)

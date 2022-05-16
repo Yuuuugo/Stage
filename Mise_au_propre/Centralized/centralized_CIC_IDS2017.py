@@ -18,6 +18,10 @@ def run_centralized_CIC_IDS2017(epochs, directory_name):
         verbose=1,
         validation_data=(X_test_centralized, y_test_centralized),
     )
+    dict = history.history
+    for keys in list(dict.keys()):
+        if "val" not in keys:
+            dict.pop(keys)
 
     file_name = directory_name + "/centralized"
     with open(file_name, "wb") as f:
