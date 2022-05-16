@@ -1,4 +1,5 @@
-def run_centralized_CIC_IDS2017(epochs):
+def run_centralized_CIC_IDS2017(epochs, directory_name):
+    import pickle
     from Model.model_CIC_IDS2017 import create_model_CIC_IDS2017
     from data.data_CIC_IDS2017.experiment import (
         X_train_centralized,
@@ -9,7 +10,7 @@ def run_centralized_CIC_IDS2017(epochs):
 
     model = create_model_CIC_IDS2017()
 
-    model.fit(
+    history = model.fit(
         X_train_centralized,
         y_train_centralized,
         epochs=epochs,
@@ -17,3 +18,7 @@ def run_centralized_CIC_IDS2017(epochs):
         verbose=1,
         validation_data=(X_test_centralized, y_test_centralized),
     )
+
+    file_name = directory_name + "/centralized"
+    with open(file_name, "wb") as f:
+        pickle.dump(history, f)

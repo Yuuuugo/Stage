@@ -1,8 +1,9 @@
 #!/usr/bin/python3
+from copyreg import pickle
 import time
 from multiprocessing import Process
 
-
+import pickle
 from Fed.Client.client import Client_Test
 import flwr as fl
 
@@ -12,23 +13,23 @@ from Fed.Server.server_FedYogi import FedYogi2
 from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
-def start_server(strategy, nbr_clients, nbr_rounds):
+def start_server(strategy, nbr_clients, nbr_rounds, directory_name):
     from Model.model_DisasterTweets import create_model_DisasterTweets
     from data.data_DisasterTweets.Preprocessing_DisasterTweets import X_test, y_test
 
     """Start the server with a slightly adjusted FedAvg strategy."""
     model = create_model_DisasterTweets()
-    arguments = [model, X_test, y_test, nbr_clients, nbr_rounds]
+    arguments = [model, X_test, y_test, nbr_clients, nbr_rounds, directory_name]
     server = eval(strategy + "2")(*arguments)
 
 
-def run_DisasterTweets(strategy, nbr_clients, nbr_rounds, timed):
+def run_DisasterTweets(strategy, nbr_clients, nbr_rounds, timed, directory_name):
 
     process = []
     # model2 = deepcopy(create_model_JS()) Bug
     server_process = Process(
         target=start_server,
-        args=(strategy, nbr_clients, nbr_rounds),
+        args=(strategy, nbr_clients, nbr_rounds, directory_name),
     )
     # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
@@ -43,6 +44,7 @@ def run_DisasterTweets(strategy, nbr_clients, nbr_rounds, timed):
                 i,
                 timed,
                 nbr_clients,
+                directory_name,
             ),
         )
         Client_i.start()
@@ -52,7 +54,7 @@ def run_DisasterTweets(strategy, nbr_clients, nbr_rounds, timed):
         p.join()
 
 
-def start_client(i, timed, nbr_clients):
+def start_client(i, timed, nbr_clients, directory_name):
     from data.data_DisasterTweets.Preprocessing_DisasterTweets import (
         X_test,
         X_train,
@@ -85,3 +87,7 @@ def start_client(i, timed, nbr_clients):
         timed=timed,
     )
     fl.client.start_numpy_client("[::]:8080", client=client)
+    print("client number " + str(i) + " metrics" + str(client.metrics_list))
+    file_name = directory_name + "/client_number_" + str(i)
+    with open(file_name, "wb") as f:
+        pickle.dump(client.metrics_list, f)

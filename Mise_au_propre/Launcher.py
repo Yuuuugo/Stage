@@ -143,7 +143,7 @@ def main() -> None:
     start_centralized = time.time()
     centralized_process = Process(
         target=eval(centralized),
-        args=(args.nbr_rounds,),
+        args=(args.nbr_rounds,directory_name),
     )
     centralized_process.start()
     centralized_process.join()

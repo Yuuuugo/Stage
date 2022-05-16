@@ -97,7 +97,7 @@ class FedAvg2(fl.server.strategy.FedAvg, Process):
         plt.plot(round, list_metrics)
         plt.show() """
 
-        # print("test" + str(all_client_metrics))
+        print("server " + str(list_metrics))
         file_name = self.directory_name + "/server"
         with open(file_name, "wb") as f:
             pickle.dump(list_metrics, f)

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from copyreg import pickle
+import pickle
 import os
 import time
 import pickle
