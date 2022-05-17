@@ -84,7 +84,6 @@ def start_client(i, timed, nbr_clients, directory_name,nbr_rounds):
     )
     fl.client.start_numpy_client("[::]:8080", client=client)
     print("client number " + str(i) + " metrics" + str(client.metrics_list))
-    print("client number " + str(i) + " metrics" + str(client.metrics_list))
     file_name = directory_name + "/client_number_" + str(i)
     with open(file_name, "wb") as f:
         pickle.dump(client.metrics_list, f)
