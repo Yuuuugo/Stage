@@ -12,11 +12,14 @@ def run_centralized_MNIST(epochs, directory_name):
         batch_size=32,
     )
     list = []
-    for key in list(dict.keys()):
-        if "val" in key and "loss" not in key:
-            for i in range(len(key)):
+    dict = history.history
+    for key in dict.keys(): 
+        if "val" in key and "loss" not in key: #ugly way to only select the metrics
+            for i in range(len(dict[key])):
                 list.append((dict[key][i], dict[key][i]))
-
+    
     file_name = directory_name + "/centralized"
     with open(file_name, "wb") as f:
         pickle.dump(list, f)
+    
+    

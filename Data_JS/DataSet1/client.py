@@ -64,7 +64,6 @@ class Client(fl.client.NumPyClient):
 
     def evaluate(self, parameters, config):
         """Evaluate parameters on the locally held test set."""
-        print("looooooooool")
         # Update local model with global parameters
         self.model.set_weights(parameters)
 
