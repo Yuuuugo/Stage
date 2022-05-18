@@ -19,8 +19,6 @@ from Centralized.centralized_Shakespeare import run_centralized_Shakespeare
 from Centralized.centralized_DisasterTweets import run_centralized_DisasterTweets
 from Centralized.centralized_IMDB import run_centralized_IMDB
 
-# from Centralized.centralized_Shakespeare import
-
 
 from Fed.federated_JS import run_JS
 from Fed.federated_CIFAR10 import run_CIFAR10
@@ -139,23 +137,28 @@ def main() -> None:
     ]
 
     print("-------------------" * 4 + "Start of Centralized" + "-----------------" * 4)
-    """
+
     start_centralized = time.time()
     centralized_process = Process(
         target=eval(centralized),
-        args=(args.nbr_rounds, directory_name),
+        args=(
+            args.nbr_rounds,
+            args.nbr_clients,
+            directory_name,
+        ),
     )
     centralized_process.start()
     centralized_process.join()
     end_centralized = time.time()
     print(f"Runtime of centralized is {end_centralized - start_centralized}")
-    """
+    """ 
     print("-------------------" * 4 + "Start of Federated" + "-----------------" * 4)
     start_federated = time.time()
     federated_object = eval(federated)()
     federated_object.run(*arguments)
     end_federated = time.time()
     print(f"Runtime of federated is {end_federated - start_federated}")
+    """
 
 
 if __name__ == "__main__":
