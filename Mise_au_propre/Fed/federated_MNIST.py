@@ -39,13 +39,7 @@ def run_MNIST(strategy, nbr_clients, nbr_rounds, timed, directory_name):
     for i in range(nbr_clients):
         Client_i = Process(
             target=start_client,
-            args=(
-                i,
-                timed,
-                nbr_clients,
-                directory_name,
-                nbr_rounds
-            ),
+            args=(i, timed, nbr_clients, directory_name, nbr_rounds),
         )
         Client_i.start()
         process.append(Client_i)
@@ -54,7 +48,7 @@ def run_MNIST(strategy, nbr_clients, nbr_rounds, timed, directory_name):
         p.join()
 
 
-def start_client(i, timed, nbr_clients, directory_name,nbr_rounds):
+def start_client(i, timed, nbr_clients, directory_name, nbr_rounds):
     from data.data_MNIST.Preprocessing_MNIST import X_test, X_train, y_test, y_train
     from Model.model_MNIST import create_model_MNIST
 
@@ -63,7 +57,7 @@ def start_client(i, timed, nbr_clients, directory_name,nbr_rounds):
             ((i + 1) / nbr_clients) * len(X_train)
         )
     ]
-    y_train_i= y_train[
+    y_train_i = y_train[
         int((i / nbr_clients) * len(y_train)) : int(
             ((i + 1) / nbr_clients) * len(y_train)
         )
@@ -80,7 +74,7 @@ def start_client(i, timed, nbr_clients, directory_name,nbr_rounds):
         y_test=y_test,
         client_nbr=i,
         timed=timed,
-        total_rnd = nbr_rounds
+        total_rnd=nbr_rounds,
     )
     fl.client.start_numpy_client("[::]:8080", client=client)
     print("client number " + str(i) + " metrics" + str(client.metrics_list))
