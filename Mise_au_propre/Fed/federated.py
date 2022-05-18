@@ -3,9 +3,11 @@ from multiprocessing import Process
 from multiprocessing.connection import Client
 import flwr as fl
 from Fed.Client.client import Client_Test
+import time
 
 
 class federated:
+    """
     def __init__(
         self,
         model,
@@ -19,8 +21,11 @@ class federated:
         self.nbr_clients = nbr_clients
         self.nbr_rounds = nbr_rounds
         self.dataset = dataset
+    """
 
     def start_server(self):
+        pass
+        """ 
         arguments = [
             self.model,
             self.dataset["X_test"],
@@ -29,8 +34,12 @@ class federated:
             self.nbr_rounds,
         ]
         eval(self.strategy + "2")(*arguments)
+        """
 
     def start_client(self, i, time):
+        pass
+
+    """
         X_train_client = (
             self.dataset["X_train"][
                 int((i / self.nbr_clients) * len(self.dataset["X_train"])) : int(
@@ -55,17 +64,27 @@ class federated:
             timed=time,
         )
         fl.client.start_numpy_client("[::]:8080", client=client)
+        """
 
-    def run(self, time):
+    def run(self, strategy, nbr_clients, nbr_rounds, timed, directory_name):
+
         process = []
+        # model2 = deepcopy(create_model_JS()) Bug
         server_process = Process(
             target=self.start_server,
+            args=(strategy, nbr_clients, nbr_rounds, directory_name),
         )
+        # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
         server_process.start()
         process.append(server_process)
+        time.sleep(2)
 
-        for i in range(self.nbr_clients):
-            Client_i = Process(target=self.start_client, args=(i, time))
+        print("After start")
+        for i in range(nbr_clients):
+            Client_i = Process(
+                target=self.start_client,
+                args=(i, timed, nbr_clients, directory_name, nbr_rounds),
+            )
             Client_i.start()
             process.append(Client_i)
 
