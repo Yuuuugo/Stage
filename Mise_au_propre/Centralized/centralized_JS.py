@@ -1,18 +1,25 @@
+import time
+
+
 def run_centralized_JS(epochs, directory_name):
     import pickle
     from Model.model_JS import create_model_JS
     from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
 
     model = create_model_JS()
+    start_time = time.time()
     history = model.fit(
         X_train, y_train, epochs=epochs, validation_data=(X_test, y_test)
     )
+    end_time = time.time()
     list = []
     dict = history.history
-    for key in dict.keys(): 
-        if "val" in key and "loss" not in key: #ugly way to only select the metrics
+    for key in dict.keys():
+        if "val" in key and "loss" not in key:  # ugly way to only select the metrics
             for i in range(len(dict[key])):
-                list.append((dict[key][i], dict[key][i])) #here we need twice for the format to be in the same way as load_results need -> when I have time change it to have the loss and the metrics :
+                list.append(
+                    (dict[key][i], dict[key][i])
+                )  # here we need twice for the format to be in the same way as load_results need -> when I have time change it to have the loss and the metrics :
                 """
         value list = []
         if "val" in key:

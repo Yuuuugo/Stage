@@ -25,7 +25,6 @@ def Data():
     array = np.asarray(df)
     array = array.reshape([27572, 62, 9, 1])
 
-    # X_train, X_test, y_train, y_test = array[3446:], array[:3446], y[3446:], y[:3446]
     X_train, X_test, y_train, y_test = train_test_split(
         array, y, test_size=0.1, shuffle=False
     )
