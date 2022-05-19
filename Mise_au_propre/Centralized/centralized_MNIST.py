@@ -8,7 +8,12 @@ def run_centralized_MNIST(epochs, nbr_clients, directory_name):
     # print(len(X_train) / 32)
     X_train_epochs = [[] for w in range(epochs)]
     y_train_epochs = [[] for w in range(epochs)]
-    all_history = {}
+    all_history = {
+        "loss": [],
+        "val_loss": [],
+        "val_sparse_categorical_accuracy": [],
+        "sparse_categorical_accuracy": [],
+    }
     for i in range(nbr_clients):
         X_train_i = X_train[
             int((i / nbr_clients) * len(X_train)) : int(
@@ -32,7 +37,6 @@ def run_centralized_MNIST(epochs, nbr_clients, directory_name):
                     ((actual_rnd + 1) / epochs) * len(y_train_i)
                 )
             ]
-            print(actual_rnd)
             X_train_epochs[actual_rnd].append(X_train_i_actual_rnd)
             y_train_epochs[actual_rnd].append(y_train_i_actual_rnd)
     # print(len(X_train_epochs[0][0]))
@@ -52,16 +56,15 @@ def run_centralized_MNIST(epochs, nbr_clients, directory_name):
         history = model.fit(
             X_t, y_t, epochs=1, validation_data=(X_test, y_test), batch_size=32
         )
-        all_history["history_epochs_" + str(epochs)] = history
+        for key in history.history.keys():
+            all_history[key].append(history.history[key])
 
-    """
     list = []
-    dict = history.history
-    for key in dict.keys():
+    for key in all_history.keys():
         if "val" in key and "loss" not in key:  # ugly way to only select the metrics
-            for i in range(len(dict[key])):
-                list.append((dict[key][i], dict[key][i]))
+            for i in range(len(all_history[key])):
+                list.append((all_history[key][i], all_history[key][i]))
 
     file_name = directory_name + "/centralized"
     with open(file_name, "wb") as f:
-        pickle.dump(list, f)"""
+        pickle.dump(list, f)

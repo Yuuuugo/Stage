@@ -22,7 +22,7 @@ from Centralized.centralized_IMDB import run_centralized_IMDB
 
 from Fed.federated_JS import run_JS
 from Fed.federated_CIFAR10 import run_CIFAR10
-from Fed.federated_MNIST import *
+from Fed.federated_MNIST import run_MNIST
 from Fed.federated_Shakespeare import run_Shakespeare
 from Fed.federated_CIC_IDS2017 import run_CIC_IDS2017
 from Fed.federated_DisasterTweets import run_DisasterTweets
@@ -127,7 +127,7 @@ def main() -> None:
 
     centralized = "run_centralized_" + args.Dataset
 
-    federated = "federated_" + args.Dataset
+    federated = "run_" + args.Dataset
     arguments = [
         args.strategy,
         args.nbr_clients,
@@ -151,14 +151,13 @@ def main() -> None:
     centralized_process.join()
     end_centralized = time.time()
     print(f"Runtime of centralized is {end_centralized - start_centralized}")
-    """ 
+
     print("-------------------" * 4 + "Start of Federated" + "-----------------" * 4)
     start_federated = time.time()
     federated_object = eval(federated)()
     federated_object.run(*arguments)
     end_federated = time.time()
     print(f"Runtime of federated is {end_federated - start_federated}")
-    """
 
 
 if __name__ == "__main__":
