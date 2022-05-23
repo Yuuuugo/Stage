@@ -33,13 +33,13 @@ def run_JS(strategy, nbr_clients, nbr_rounds, timed, directory_name):
     server_process.start()
     process.append(server_process)
     print("Server Started ig")
-    time.sleep(2)
+    time.sleep(6)
 
     print("After start")
     for i in range(nbr_clients):
         Client_i = Process(
             target=start_client,
-            args=(i, timed, nbr_clients, directory_name,nbr_rounds),
+            args=(i, timed, nbr_clients, directory_name, nbr_rounds),
         )
         Client_i.start()
         process.append(Client_i)
@@ -48,20 +48,24 @@ def run_JS(strategy, nbr_clients, nbr_rounds, timed, directory_name):
         p.join()
 
 
-def start_client(i, timed, nbr_clients, directory_name,nbr_rounds):
+def start_client(i, timed, nbr_clients, directory_name, nbr_rounds):
     from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
     from Model.model_JS import create_model_JS
 
-    X_train_i = X_train[
-        int((i / nbr_clients) * len(X_train)) : int(
-            ((i + 1) / nbr_clients) * len(X_train)
-        )
-    ],
-    y_train_i = y_train[
-        int((i / nbr_clients) * len(y_train)) : int(
-            ((i + 1) / nbr_clients) * len(y_train)
-        )
-    ],  # So each client have a different dataset to train on
+    X_train_i = (
+        X_train[
+            int((i / nbr_clients) * len(X_train)) : int(
+                ((i + 1) / nbr_clients) * len(X_train)
+            )
+        ],
+    )
+    y_train_i = (
+        y_train[
+            int((i / nbr_clients) * len(y_train)) : int(
+                ((i + 1) / nbr_clients) * len(y_train)
+            )
+        ],
+    )  # So each client have a different dataset to train on
 
     print("Launching of client" + str(i))
     # Start Flower client
@@ -74,7 +78,7 @@ def start_client(i, timed, nbr_clients, directory_name,nbr_rounds):
         y_test=y_test,
         client_nbr=i,
         timed=timed,
-        total_rnd = nbr_rounds
+        total_rnd=nbr_rounds,
     )
     fl.client.start_numpy_client("[::]:8080", client=client)
     print("client number " + str(i) + " metrics" + str(client.metrics_list))
