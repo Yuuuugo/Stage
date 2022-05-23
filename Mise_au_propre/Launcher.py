@@ -1,5 +1,6 @@
 from multiprocessing import Process
 import os
+from pickle import FALSE
 import sys
 import argparse
 
@@ -37,6 +38,7 @@ import datetime
 import FLconfig
 
 import time
+
 
 actual_time = time.ctime()
 actual_time = actual_time.split(" ")
@@ -149,7 +151,6 @@ def main() -> None:
     centralized_process.join()
     end_centralized = time.time()
     print(f"Runtime of centralized is {end_centralized - start_centralized}")
-
     print("-------------------" * 4 + "Start of Federated" + "-----------------" * 4)
     start_federated = time.time()
     eval(federated)(*arguments)

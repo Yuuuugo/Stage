@@ -1,9 +1,8 @@
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-
-
 def Data():
+    import pandas as pd
+    import numpy as np
+    from sklearn.model_selection import train_test_split
+    import tensorflow as tf
 
     train_df = pd.read_csv(
         "/home/hugo/hugo/Stage/Mise_au_propre/data/data_DisasterTweets/train.csv"
@@ -19,14 +18,13 @@ def Data():
         y,
         test_size=0.1,
     )
-    import tensorflow as tf
-
     return (
-        X_train,
-        X_test,
-        y_train,
-        y_test,
+        tf.constant(X_train),
+        tf.constant(X_test),
+        tf.constant(y_train),
+        tf.constant(y_test),
     )
 
 
 X_train, X_test, y_train, y_test = Data()
+print(type(X_train))

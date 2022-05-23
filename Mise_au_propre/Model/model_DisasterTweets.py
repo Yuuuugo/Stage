@@ -1,4 +1,4 @@
-"""def create_model_DisasterTweets():
+def create_model_DisasterTweets():
 
     import tensorflow as tf
     from data.data_DisasterTweets.Preprocessing_DisasterTweets import X_train
@@ -36,10 +36,12 @@
     model_DisasterTweets.compile(
         loss=tf.keras.losses.BinaryCrossentropy(),
         optimizer=tf.keras.optimizers.Adam(),
-        metrics=["accuracy"],
+        metrics=tf.keras.metrics.BinaryAccuracy(),
     )
 
     return model_DisasterTweets
+
+
 """
 
 import tensorflow_hub as hub
@@ -153,3 +155,4 @@ def create_model_DisasterTweets():
 
     classifier_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
     return classifier_model
+"""
