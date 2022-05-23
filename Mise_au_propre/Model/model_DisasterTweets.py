@@ -45,7 +45,6 @@
 import tensorflow_hub as hub
 import tensorflow as tf
 import tensorflow_text as text
-from official.nlp import optimization  # to create AdamW optimizer
 
 from data.data_DisasterTweets.Preprocessing_DisasterTweets import X_train
 
