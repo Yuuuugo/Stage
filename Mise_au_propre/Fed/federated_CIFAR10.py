@@ -23,7 +23,8 @@ def start_server(strategy, nbr_clients, nbr_rounds, directory_name, X_test, y_te
 
 def run_CIFAR10(strategy, nbr_clients, nbr_rounds, timed, directory_name):
     from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, y_test, X_train, y_train
-    # We only charge the data once 
+
+    # We only charge the data once
     process = []
     # model2 = deepcopy(create_model_JS()) Bug
     server_process = Process(
@@ -33,7 +34,7 @@ def run_CIFAR10(strategy, nbr_clients, nbr_rounds, timed, directory_name):
     # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
     process.append(server_process)
-    time.sleep(2)
+    time.sleep(5)
 
     print("After start")
     for i in range(nbr_clients):
@@ -48,7 +49,7 @@ def run_CIFAR10(strategy, nbr_clients, nbr_rounds, timed, directory_name):
                 y_train,
                 X_test,
                 y_test,
-                nbr_rounds
+                nbr_rounds,
             ),
         )
         Client_i.start()
@@ -59,20 +60,24 @@ def run_CIFAR10(strategy, nbr_clients, nbr_rounds, timed, directory_name):
 
 
 def start_client(
-    i, timed, nbr_clients, directory_name, X_train, y_train, X_test, y_test,nbr_rounds
+    i, timed, nbr_clients, directory_name, X_train, y_train, X_test, y_test, nbr_rounds
 ):
     from Model.model_CIFAR10 import create_model_CIFAR10
 
-    X_train_i = X_train[
-        int((i / nbr_clients) * len(X_train)) : int(
-            ((i + 1) / nbr_clients) * len(X_train)
-        )
-    ],
-    y_train_i = y_train[
-        int((i / nbr_clients) * len(y_train)) : int(
-            ((i + 1) / nbr_clients) * len(y_train)
-        )
-    ],  # So each client have a different dataset to train on
+    X_train_i = (
+        X_train[
+            int((i / nbr_clients) * len(X_train)) : int(
+                ((i + 1) / nbr_clients) * len(X_train)
+            )
+        ],
+    )
+    y_train_i = (
+        y_train[
+            int((i / nbr_clients) * len(y_train)) : int(
+                ((i + 1) / nbr_clients) * len(y_train)
+            )
+        ],
+    )  # So each client have a different dataset to train on
 
     print("Launching of client" + str(i))
     # Start Flower client
@@ -85,7 +90,7 @@ def start_client(
         y_test=y_test,
         client_nbr=i,
         timed=timed,
-        total_rnd = nbr_rounds
+        total_rnd=nbr_rounds,
     )
     fl.client.start_numpy_client("[::]:8080", client=client)
     print("client number " + str(i) + " metrics" + str(client.metrics_list))
