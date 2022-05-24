@@ -20,17 +20,18 @@ def start_server(
     nbr_rounds,
     X_test_centralized,
     y_test_centralized,
+    directory_name
 ):
 
     from Model.model_CIC_IDS2017 import create_model_CIC_IDS2017
 
     """Start the server with a slightly adjusted FedAvg strategy."""
     model = create_model_CIC_IDS2017()
-    arguments = [model, X_test_centralized, y_test_centralized, nbr_clients, nbr_rounds]
+    arguments = [model, X_test_centralized, y_test_centralized, nbr_clients, nbr_rounds,directory_name]
     server = eval(strategy + "2")(*arguments)
 
 
-def run_CIC_IDS2017(strategy, nbr_clients, nbr_rounds, timed):
+def run_CIC_IDS2017(strategy, nbr_clients, nbr_rounds, timed, directory_name):
 
     from data.data_CIC_IDS2017.Preprocessing_CIC_IDS2017 import (
         Set,
@@ -78,6 +79,7 @@ def start_client(
     Set,
     X_test_centralized,
     y_test_centralized,
+    directory_name,
 ):
     from Model.model_CIC_IDS2017 import create_model_CIC_IDS2017
 
@@ -89,5 +91,13 @@ def start_client(
         y_test=y_test_centralized[i],
         client_nbr=i,
         timed=timed,
+        total_rnd = nbr_rounds
     )
     fl.client.start_numpy_client("[::]:8080", client=client)
+    print("client number " + str(i) + " metrics" + str(client.metrics_list))
+    file_name = directory_name + "/client_number_" + str(i)
+    with open(file_name, "wb") as f:
+        pickle.dump(client.metrics_list, f)
+
+        
+

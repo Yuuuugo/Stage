@@ -53,5 +53,22 @@ python3 Launcher.py --Dataset=CIFAR10 --strategy=FedAdagrad --nbr_clients=20 --n
 python3 Launcher.py --Dataset=CIFAR10 --strategy=FedYogi --nbr_clients=5 --nbr_rounds=5
 python3 Launcher.py --Dataset=CIFAR10 --strategy=FedYogi --nbr_clients=10 --nbr_rounds=10
 python3 Launcher.py --Dataset=CIFAR10 --strategy=FedYogi --nbr_clients=20 --nbr_rounds=20
-'
 
+
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedAvg --nbr_clients=5 --nbr_rounds=5
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedAvg --nbr_clients=10 --nbr_rounds=10
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedAvg --nbr_clients=20 --nbr_rounds=20
+
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedAdam --nbr_clients=5 --nbr_rounds=5
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedAdam --nbr_clients=10 --nbr_rounds=10
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedAdam --nbr_clients=20 --nbr_rounds=20
+
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedAdagrad --nbr_clients=5 --nbr_rounds=5
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedAdagrad --nbr_clients=10 --nbr_rounds=10
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedAdagrad --nbr_clients=20 --nbr_rounds=20
+
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedYogi --nbr_clients=5 --nbr_rounds=5
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedYogi --nbr_clients=10 --nbr_rounds=10
+python3 Launcher.py --Dataset=DisasterTweets --strategy=FedYogi --nbr_clients=20 --nbr_rounds=20
+
+'

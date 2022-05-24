@@ -1,39 +1,39 @@
 #!/usr/bin/python3
-import pickle
-import os
 import time
-import pickle
 from multiprocessing import Process
-
+import pickle
 
 from Fed.Client.client import Client_Test
 import flwr as fl
+
 from Fed.Server.server_FedAvg import FedAvg2
 from Fed.Server.server_FedAdam import FedAdam2
 from Fed.Server.server_FedYogi import FedYogi2
 from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
-def start_server(strategy, X_test, y_test, nbr_clients, nbr_rounds, directory_name):
+def start_server(strategy, nbr_clients, nbr_rounds, directory_name):
     from Model.model_JS import create_model_JS
+    from data.data_JS.Preprocessing_JS import X_test, y_test
 
+    """Start the server with a slightly adjusted FedAvg strategy."""
     model = create_model_JS()
     arguments = [model, X_test, y_test, nbr_clients, nbr_rounds, directory_name]
     server = eval(strategy + "2")(*arguments)
 
 
 def run_JS(strategy, nbr_clients, nbr_rounds, timed, directory_name):
-    from data.data_JS.Preprocessing_JS import X_test, y_test
 
     process = []
+    # model2 = deepcopy(create_model_JS()) Bug
     server_process = Process(
         target=start_server,
-        args=(strategy, X_test, y_test, nbr_clients, nbr_rounds, directory_name),
+        args=(strategy, nbr_clients, nbr_rounds, directory_name),
     )
+    # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
     process.append(server_process)
-    print("Server Started ig")
-    time.sleep(6)
+    time.sleep(2)
 
     print("After start")
     for i in range(nbr_clients):
@@ -52,20 +52,16 @@ def start_client(i, timed, nbr_clients, directory_name, nbr_rounds):
     from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
     from Model.model_JS import create_model_JS
 
-    X_train_i = (
-        X_train[
-            int((i / nbr_clients) * len(X_train)) : int(
-                ((i + 1) / nbr_clients) * len(X_train)
-            )
-        ],
-    )
-    y_train_i = (
-        y_train[
-            int((i / nbr_clients) * len(y_train)) : int(
-                ((i + 1) / nbr_clients) * len(y_train)
-            )
-        ],
-    )  # So each client have a different dataset to train on
+    X_train_i = X_train[
+        int((i / nbr_clients) * len(X_train)) : int(
+            ((i + 1) / nbr_clients) * len(X_train)
+        )
+    ]
+    y_train_i = y_train[
+        int((i / nbr_clients) * len(y_train)) : int(
+            ((i + 1) / nbr_clients) * len(y_train)
+        )
+    ]  # So each client have a different dataset to train on
 
     print("Launching of client" + str(i))
     # Start Flower client

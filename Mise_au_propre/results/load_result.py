@@ -7,10 +7,11 @@ import os
 
 dict = {}
 
-experience_path = "MNIST_FedAvg_clients_5_rounds5_20220518150230"
+experience_path = "MNIST_FedAvg_clients_2_rounds2_20220524170429"
 for root, dirs, files in os.walk(experience_path + "/", topdown=False):
     print(files)
     for filename in files:
+        print(filename)
         unpickleFile = open(experience_path + "/" + filename, "rb")
         new_dict = pickle.load(unpickleFile, encoding="latin1")
         dict[filename] = new_dict
@@ -24,7 +25,6 @@ rounds = [i for i in range(len(dict[list(dict.keys())[0]]))]
 
 
 for i in list(dict.keys()):
-    print(i, len(dict[i]))
     list = dict[i]
     y = []
     for elements in list:

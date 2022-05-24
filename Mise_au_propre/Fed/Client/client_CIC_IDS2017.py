@@ -4,13 +4,16 @@ import tensorflow as tf
 
 
 class Client_CIC_IDS2017(fl.client.NumPyClient):
-    def __init__(self, model, Set, X_test, y_test, client_nbr, timed):
+    def __init__(self, model, Set, X_test, y_test, client_nbr, timed,total_rnd):
         self.model = model
         self.Set = Set
         self.X_test = X_test
         self.y_test = y_test
         self.client_nbr = client_nbr
         self.timed = timed
+        self.metrics_list = []
+        self.total_rnd = total_rnd
+        self.actual_rnd = 0
 
     def get_parameters(self):
         """Get parameters of the local model."""
@@ -26,17 +29,6 @@ class Client_CIC_IDS2017(fl.client.NumPyClient):
         epochs: int = config["local_epochs"]
         actual_rnd: int = config["rnd"] - 1
 
-        CALLBACK = tf.keras.callbacks.TensorBoard(
-            log_dir="logs/experiment/" + self.timed + "/Client_" + str(self.client_nbr),
-            histogram_freq=0,
-            write_graph=True,
-            write_images=False,
-            write_steps_per_second=False,
-            update_freq="epoch",
-            profile_batch=0,
-            embeddings_freq=0,
-            embeddings_metadata=None,
-        )
         print("Avant fit ")
 
         history = self.model.fit(

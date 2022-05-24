@@ -12,8 +12,9 @@ from Fed.Server.server_FedYogi import FedYogi2
 from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
-def start_server(strategy, nbr_clients, nbr_rounds, directory_name, X_test, y_test):
+def start_server(strategy, nbr_clients, nbr_rounds, directory_name):
     from Model.model_CIFAR10 import create_model_CIFAR10
+    from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, y_test
 
     """Start the server with a slightly adjusted FedAvg strategy."""
     model = create_model_CIFAR10()
@@ -22,35 +23,23 @@ def start_server(strategy, nbr_clients, nbr_rounds, directory_name, X_test, y_te
 
 
 def run_CIFAR10(strategy, nbr_clients, nbr_rounds, timed, directory_name):
-    from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, y_test, X_train, y_train
 
-    # We only charge the data once
     process = []
     # model2 = deepcopy(create_model_JS()) Bug
     server_process = Process(
         target=start_server,
-        args=(strategy, nbr_clients, nbr_rounds, directory_name, X_test, y_test),
+        args=(strategy, nbr_clients, nbr_rounds, directory_name),
     )
     # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
     process.append(server_process)
-    time.sleep(5)
+    time.sleep(2)
 
     print("After start")
     for i in range(nbr_clients):
         Client_i = Process(
             target=start_client,
-            args=(
-                i,
-                timed,
-                nbr_clients,
-                directory_name,
-                X_train,
-                y_train,
-                X_test,
-                y_test,
-                nbr_rounds,
-            ),
+            args=(i, timed, nbr_clients, directory_name, nbr_rounds),
         )
         Client_i.start()
         process.append(Client_i)
@@ -59,33 +48,28 @@ def run_CIFAR10(strategy, nbr_clients, nbr_rounds, timed, directory_name):
         p.join()
 
 
-def start_client(
-    i, timed, nbr_clients, directory_name, X_train, y_train, X_test, y_test, nbr_rounds
-):
+def start_client(i, timed, nbr_clients, directory_name, nbr_rounds):
+    from data.data_CIFAR10.Preprocessing_CIFAR10 import X_test, X_train, y_test, y_train
     from Model.model_CIFAR10 import create_model_CIFAR10
 
-    X_train_i = (
-        X_train[
-            int((i / nbr_clients) * len(X_train)) : int(
-                ((i + 1) / nbr_clients) * len(X_train)
-            )
-        ],
-    )
-    y_train_i = (
-        y_train[
-            int((i / nbr_clients) * len(y_train)) : int(
-                ((i + 1) / nbr_clients) * len(y_train)
-            )
-        ],
-    )  # So each client have a different dataset to train on
+    X_train_i = X_train[
+        int((i / nbr_clients) * len(X_train)) : int(
+            ((i + 1) / nbr_clients) * len(X_train)
+        )
+    ]
+    y_train_i = y_train[
+        int((i / nbr_clients) * len(y_train)) : int(
+            ((i + 1) / nbr_clients) * len(y_train)
+        )
+    ]  # So each client have a different dataset to train on
 
     print("Launching of client" + str(i))
     # Start Flower client
     model = create_model_CIFAR10()
     client = Client_Test(
         model=model,
-        X_train=X_train,
-        y_train=y_train,
+        X_train=X_train_i,
+        y_train=y_train_i,
         X_test=X_test,
         y_test=y_test,
         client_nbr=i,
