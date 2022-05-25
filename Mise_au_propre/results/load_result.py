@@ -49,6 +49,9 @@ def create_curves(experience_path):
         for element in metrics:
             y.append(element[1])
         plt.plot(duration, y, label=component)
-        plt.legend()
-
+        if "JS" in experience_path:
+            plt.yscale("log")
+        # plt.legend()
+        
     fig.savefig(experience_path + "/metric_with_all_client.jpg")
+

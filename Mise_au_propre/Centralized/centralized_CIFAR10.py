@@ -3,6 +3,7 @@ def run_centralized_CIFAR10(epochs, nbr_clients, directory_name):
     from Model.model_CIFAR10 import create_model_CIFAR10
     from data.data_CIFAR10.Preprocessing_CIFAR10 import X_train, X_test, y_test, y_train
     import tensorflow as tf
+    import time
 
     model = create_model_CIFAR10()
     # print(len(X_train) / 32)
@@ -41,7 +42,7 @@ def run_centralized_CIFAR10(epochs, nbr_clients, directory_name):
             y_train_epochs[actual_rnd].append(y_train_i_actual_rnd)
     # print(len(X_train_epochs[0][0]))
     # print(len(X_train_epochs[1][0]))
-
+    duration = []
     # print("SIZEE = " + str(len(X_train_epochs[0])))
     for i in range(epochs):
         X_t = X_train_epochs[i][0]
@@ -53,9 +54,13 @@ def run_centralized_CIFAR10(epochs, nbr_clients, directory_name):
             X_t = tf.concat([X_t, X_train_epochs[i][j]], 0)
             y_t = tf.concat([y_t, y_train_epochs[i][j]], 0)
 
+        start = time.time()
+
         history = model.fit(
             X_t, y_t, epochs=1, validation_data=(X_test, y_test), batch_size=32
         )
+        end = time.time()
+        duration.append(end - start)
         for key in history.history.keys():
             all_history[key].append(history.history[key])
 
@@ -64,7 +69,9 @@ def run_centralized_CIFAR10(epochs, nbr_clients, directory_name):
         if "val" in key and "loss" not in key:  # ugly way to only select the metrics
             for i in range(len(all_history[key])):
                 list.append((all_history[key][i], all_history[key][i]))
-
+    for i in range(len(duration) - 1):
+        duration[i + 1] += duration[i]
     file_name = directory_name + "/centralized"
     with open(file_name, "wb") as f:
         pickle.dump(list, f)
+        pickle.dump(duration, i)

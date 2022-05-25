@@ -2,14 +2,14 @@ from multiprocessing import Process
 
 import flwr as fl
 from typing import Any, Callable, Dict, List, Optional, Tuple
-from flwr.server.strategy import FedAdagrad
 import matplotlib.pyplot as plt
 import pickle
 from flwr.server.client_proxy import ClientProxy
 from flwr.common import EvaluateRes
+import time
 
 
-def get_eval_fn(model2, X_test, y_test, list_metrics):
+def get_eval_fn(model2, X_test, y_test, list_metrics, duration):
     """Return an evaluation function for server-side evaluation."""
 
     # Load data and model2 here to avoid the overhead of doing it in `evaluate` itself
@@ -20,7 +20,7 @@ def get_eval_fn(model2, X_test, y_test, list_metrics):
     def evaluate(
         weights: fl.common.Weights,
     ) -> Optional[Tuple[float, Dict[str, fl.common.Scalar]]]:
-
+        duration.append(time.time())
         model2.set_weights(weights)  # Update model2 with the latest parameters
         print("Test evaluate")
         # model2.summary()
@@ -66,6 +66,7 @@ class FedAdagrad2(Process):
         self.model = model2
         self.directory_name = directory_name
         # self.model = create_model_JS()
+        self.duration = [time.time()]
         self.run()
 
     def run(self):
@@ -77,7 +78,9 @@ class FedAdagrad2(Process):
             min_fit_clients=self.nbr_clients,
             min_eval_clients=self.nbr_clients,
             min_available_clients=self.nbr_clients,
-            eval_fn=get_eval_fn(self.model, self.X_test, self.y_test, list_metrics),
+            eval_fn=get_eval_fn(
+                self.model, self.X_test, self.y_test, list_metrics, self.duration
+            ),
             on_fit_config_fn=fit_config,
             on_evaluate_config_fn=evaluate_config,
             initial_parameters=fl.common.weights_to_parameters(
@@ -90,14 +93,15 @@ class FedAdagrad2(Process):
         fl.server.start_server(
             "[::]:8080", config={"num_rounds": self.nbr_rounds}, strategy=strategy
         )
-        """ print("test")
-        print(list_metrics)
-        round = [i for i in range(len(list_metrics))]
-        plt.xlabel("rounds")
-        plt.ylabel("Accuracy")
-        plt.figtext(0.8, 0.8, "nbr of clients : " + str(self.nbr_clients))
-        plt.plot(round, list_metrics)
-        plt.show() """
+
         file_name = self.directory_name + "/server"
+        list = []
+        for i in range(len(self.duration) - 1):
+            list.append(self.duration[i + 1] - self.duration[i])
+        list.pop(0)
+        for i in range(len(list) - 1):
+            list[i + 1] += list[i]
+
         with open(file_name, "wb") as f:
             pickle.dump(list_metrics, f)
+            pickle.dump(list, f)

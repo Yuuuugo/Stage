@@ -3,6 +3,7 @@ def run_centralized_JS(epochs, nbr_clients, directory_name):
     import pickle
     from Model.model_JS import create_model_JS
     from data.data_JS.Preprocessing_JS import X_test, X_train, y_test, y_train
+    import time
 
     model = create_model_JS()
     X_train_epochs = [[] for w in range(epochs)]
@@ -42,6 +43,7 @@ def run_centralized_JS(epochs, nbr_clients, directory_name):
     # print(len(X_train_epochs[1][0]))
 
     # print("SIZEE = " + str(len(X_train_epochs[0])))
+    duration = []
     for i in range(epochs):
         X_t = X_train_epochs[i][0]
         y_t = y_train_epochs[i][0]
@@ -51,10 +53,12 @@ def run_centralized_JS(epochs, nbr_clients, directory_name):
 
             X_t = tf.concat([X_t, X_train_epochs[i][j]], 0)
             y_t = tf.concat([y_t, y_train_epochs[i][j]], 0)
-
+        start = time.time()
         history = model.fit(
             X_t, y_t, epochs=1, validation_data=(X_test, y_test), batch_size=32
         )
+        end = time.time()
+        duration.append(end - start)
         for key in history.history.keys():
             all_history[key].append(history.history[key])
 
@@ -64,6 +68,10 @@ def run_centralized_JS(epochs, nbr_clients, directory_name):
             for i in range(len(all_history[key])):
                 list.append((all_history[key][i], all_history[key][i]))
 
+    for i in range(len(duration) - 1):
+        duration[i + 1] += duration[i]
     file_name = directory_name + "/centralized"
+
     with open(file_name, "wb") as f:
         pickle.dump(list, f)
+        pickle.dump(duration, f)

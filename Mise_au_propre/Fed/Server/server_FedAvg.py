@@ -22,7 +22,6 @@ def get_eval_fn(model, X_test, y_test, list_metrics, duration):
 
         duration.append(time.time())
         model.set_weights(weights)  # Update model2 with the latest parameters
-        print("Test evaluate")
         loss, metrics_used = model.evaluate(X_test, y_test)
         list_metrics.append((loss, metrics_used))
         print("Test after evaluate")
