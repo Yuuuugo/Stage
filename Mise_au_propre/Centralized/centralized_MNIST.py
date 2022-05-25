@@ -69,6 +69,9 @@ def run_centralized_MNIST(epochs, nbr_clients, directory_name):
             for i in range(len(all_history[key])):
                 list.append((all_history[key][i], all_history[key][i]))
 
+    for i in range(len(duration) - 1):
+        duration[i + 1] += duration[i]
+
     file_name = directory_name + "/centralized"
     with open(file_name, "wb") as f:
         pickle.dump(list, f)

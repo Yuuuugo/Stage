@@ -63,7 +63,7 @@ class FedAvg2(fl.server.strategy.FedAvg, Process):
         self.nbr_rounds = nbr_rounds
         self.model = model
         self.directory_name = directory_name
-        self.duration = []
+        self.duration = [time.time()]
         self.run()
 
     def run(self):
@@ -92,6 +92,12 @@ class FedAvg2(fl.server.strategy.FedAvg, Process):
         )
         print("server " + str(list_metrics))
         file_name = self.directory_name + "/server"
+        list = []
+        for i in range(len(self.duration) - 1):
+            list.append(self.duration[i + 1] - self.duration[i])
+        list.pop(0)
+        for i in range(len(list) - 1):
+            list[i + 1] += list[i]
         with open(file_name, "wb") as f:
             pickle.dump(list_metrics, f)
-            pickle.dump(self.duration, f)
+            pickle.dump(list, f)
