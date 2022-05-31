@@ -19,6 +19,7 @@ from Centralized.centralized_CIC_IDS2017 import run_centralized_CIC_IDS2017
 from Centralized.centralized_Shakespeare import run_centralized_Shakespeare
 from Centralized.centralized_DisasterTweets import run_centralized_DisasterTweets
 from Centralized.centralized_IMDB import run_centralized_IMDB
+from Centralized.centralized_Bostonhouse import run_centralized_Bostonhouse
 
 # from Centralized.centralized_Shakespeare import
 
@@ -30,6 +31,7 @@ from Fed.federated_Shakespeare import run_Shakespeare
 from Fed.federated_CIC_IDS2017 import run_CIC_IDS2017
 from Fed.federated_DisasterTweets import run_DisasterTweets
 from Fed.federated_IMDB import run_IMDB
+from Fed.federated_Bostonhouse import run_Bostonhouse
 
 import traceback
 import signal
@@ -100,6 +102,7 @@ def main() -> None:
             "MNIST",
             "DisasterTweets",
             "IMDB",
+            "Bostonhouse",
         ],
         required=True,
     )
@@ -124,7 +127,7 @@ def main() -> None:
         + args.strategy
         + "_clients_"
         + str(args.nbr_clients)
-        + "_rounds"
+        + "_rounds_"
         + str(args.nbr_rounds)
         + "_"
         + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
@@ -153,14 +156,12 @@ def main() -> None:
     centralized_process.join()
     end_centralized = time.time()
     print(f"Runtime of centralized is {end_centralized - start_centralized}")
-
     print("-------------------" * 4 + "Start of Federated" + "-----------------" * 4)
     start_federated = time.time()
     eval(federated)(*arguments)
     end_federated = time.time()
     print(f"Runtime of federated is {end_federated - start_federated}")
     create_curves(experience_path=directory_name)
-
 
 if __name__ == "__main__":
     main()

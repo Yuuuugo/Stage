@@ -7,7 +7,7 @@ import os
 
 def create_curves(experience_path):
 
-    dict = {"server": {}, "centralized": {}}
+    dictonnary = {"server": {}, "centralized": {}}
     for root, dirs, files in os.walk(experience_path + "/", topdown=False):
         print(files)
         for filename in files:
@@ -19,39 +19,41 @@ def create_curves(experience_path):
                 server_metrics.pop(
                     0
                 )  # We skip the evaluation round that happend before training
-                dict["server"]["metrics"] = server_metrics
-                dict["server"]["duration"] = server_duration
+                dictonnary["server"]["metrics"] = server_metrics
+                dictonnary["server"]["duration"] = server_duration
 
             elif filename == "centralized":
                 unpickleFile = open(experience_path + "/" + filename, "rb")
                 centralized_metrics = pickle.load(unpickleFile, encoding="latin1")
                 centralized_duration = pickle.load(unpickleFile, encoding="latin1")
 
-                dict["centralized"]["metrics"] = centralized_metrics
-                dict["centralized"]["duration"] = centralized_duration
+                dictonnary["centralized"]["metrics"] = centralized_metrics
+                dictonnary["centralized"]["duration"] = centralized_duration
 
             elif "client_" in filename:
                 unpickleFile = open(experience_path + "/" + filename, "rb")
-                new_dict = pickle.load(unpickleFile, encoding="latin1")
-                dict[filename] = {}
-                dict[filename]["metrics"] = new_dict
+                new_dictonnary = pickle.load(unpickleFile, encoding="latin1")
+                dictonnary[filename] = {}
+                dictonnary[filename]["metrics"] = new_dictonnary
 
     fig, ax = plt.subplots()
 
-    for component in list(dict.keys()):
+    for component in list(dictonnary.keys()):
         if "client_" in component:
-            dict[component]["duration"] = dict["server"]["duration"]
-        metrics = dict[component]["metrics"]
-        duration = dict[component]["duration"]
-        print(duration)
-        print((component, len(metrics), len(duration)))
+            dictonnary[component]["duration"] = dictonnary["server"]["duration"]
+        metrics = dictonnary[component]["metrics"]
+        duration = dictonnary[component]["duration"]
+        #print(duration)
+        #print((component, len(metrics), len(duration)))
         y = []
         for element in metrics:
             y.append(element[1])
         plt.plot(duration, y, label=component)
+
         if "JS" in experience_path:
-            plt.yscale("log")
+            ax.set_ylim([0,5])
+            #plt.yscale("log")
         # plt.legend()
-        
+
     fig.savefig(experience_path + "/metric_with_all_client.jpg")
 

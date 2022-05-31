@@ -54,7 +54,10 @@ class Client_Test(fl.client.NumPyClient):
         ]  # So on each round the client train on differents Dataset
 
         self.actual_rnd += 1
-        batch_size = 32
+        if len(X_train_rnd) > 32:
+            batch_size = 32 
+        else:
+            batch_size = 1
         training_history = self.model.fit(
             X_train_rnd,  # A modifier afin de fit pas sur les memes donnes (le client genere des donnes sucessivent)
             y_train_rnd,

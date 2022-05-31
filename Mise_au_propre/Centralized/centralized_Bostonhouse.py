@@ -1,19 +1,19 @@
-def run_centralized_MNIST(epochs, nbr_clients, directory_name):
+def run_centralized_Bostonhouse(epochs, nbr_clients, directory_name):
     import pickle
-    from Model.model_MNIST import create_model_MNIST
-    from data.data_MNIST.Preprocessing_MNIST import X_train, X_test, y_train, y_test
+    from Model.model_Bostonhouse import create_model_Bostonhouse
+    from data.data_Bostonhouse.Preprocessing_Bostonhouse import X_train, X_test, y_train, y_test
     import tensorflow as tf
     import time
 
-    model = create_model_MNIST()
+    model = create_model_Bostonhouse()
     # print(len(X_train) / 32)
     X_train_epochs = [[] for w in range(epochs)]
     y_train_epochs = [[] for w in range(epochs)]
     all_history = {
         "loss": [],
         "val_loss": [],
-        "val_sparse_categorical_accuracy": [],
-        "sparse_categorical_accuracy": [],
+        "val_mean_squared_error": [],
+        "mean_squared_error": [],
     }
     for i in range(nbr_clients):
         X_train_i = X_train[
@@ -40,15 +40,15 @@ def run_centralized_MNIST(epochs, nbr_clients, directory_name):
             ]
             X_train_epochs[actual_rnd].append(X_train_i_actual_rnd)
             y_train_epochs[actual_rnd].append(y_train_i_actual_rnd)
-
- 
+    # print(len(X_train_epochs[0][0]))
+    # print(len(X_train_epochs[1][0]))
     duration = []
-   
+    # print("SIZEE = " + str(len(X_train_epochs[0])))
     for i in range(epochs):
         X_t = X_train_epochs[i][0]
         y_t = y_train_epochs[i][0]
-       
-     
+        # print("Size of X_train_epochs :" + str(len(X_train_epochs[i])))
+        # print(type(X_t))
         for j in range(1, len(X_train_epochs[i])):
 
             X_t = tf.concat([X_t, X_train_epochs[i][j]], 0)
@@ -76,3 +76,13 @@ def run_centralized_MNIST(epochs, nbr_clients, directory_name):
     with open(file_name, "wb") as f:
         pickle.dump(list, f)
         pickle.dump(duration, f)
+
+
+
+
+
+
+
+
+
+

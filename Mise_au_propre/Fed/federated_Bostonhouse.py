@@ -13,16 +13,16 @@ from Fed.Server.server_FedAdagrad import FedAdagrad2
 
 
 def start_server(strategy, nbr_clients, nbr_rounds, directory_name):
-    from Model.model_MNIST import create_model_MNIST
-    from data.data_MNIST.Preprocessing_MNIST import X_test, y_test
+    from Model.model_Bostonhouse import create_model_Bostonhouse
+    from data.data_Bostonhouse.Preprocessing_Bostonhouse import X_test, y_test
 
     """Start the server with a slightly adjusted FedAvg strategy."""
-    model = create_model_MNIST()
+    model = create_model_Bostonhouse()
     arguments = [model, X_test, y_test, nbr_clients, nbr_rounds, directory_name]
     server = eval(strategy + "2")(*arguments)
 
 
-def run_MNIST(strategy, nbr_clients, nbr_rounds, timed, directory_name):
+def run_Bostonhouse(strategy, nbr_clients, nbr_rounds, timed, directory_name):
 
     process = []
     # model2 = deepcopy(create_model_JS()) Bug
@@ -33,7 +33,7 @@ def run_MNIST(strategy, nbr_clients, nbr_rounds, timed, directory_name):
     # server_process = Process(target=start_server, args=(nbr_rounds, nbr_clients, 0.2))
     server_process.start()
     process.append(server_process)
-    time.sleep(5)
+    time.sleep(2)
 
     print("After start")
     for i in range(nbr_clients):
@@ -49,8 +49,8 @@ def run_MNIST(strategy, nbr_clients, nbr_rounds, timed, directory_name):
 
 
 def start_client(i, timed, nbr_clients, directory_name, nbr_rounds):
-    from data.data_MNIST.Preprocessing_MNIST import X_test, X_train, y_test, y_train
-    from Model.model_MNIST import create_model_MNIST
+    from data.data_Bostonhouse.Preprocessing_Bostonhouse import X_test, X_train, y_test, y_train
+    from Model.model_Bostonhouse import create_model_Bostonhouse
 
     X_train_i = X_train[
         int((i / nbr_clients) * len(X_train)) : int(
@@ -65,7 +65,7 @@ def start_client(i, timed, nbr_clients, directory_name, nbr_rounds):
 
     print("Launching of client" + str(i))
     # Start Flower client
-    model = create_model_MNIST()
+    model = create_model_Bostonhouse()
     client = Client_Test(
         model=model,
         X_train=X_train_i,
@@ -81,3 +81,4 @@ def start_client(i, timed, nbr_clients, directory_name, nbr_rounds):
     file_name = directory_name + "/client_number_" + str(i)
     with open(file_name, "wb") as f:
         pickle.dump(client.metrics_list, f)
+

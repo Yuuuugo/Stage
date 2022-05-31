@@ -1,4 +1,3 @@
-"""
 def create_model_DisasterTweets():
 
     import tensorflow as tf
@@ -156,3 +155,4 @@ def create_model_DisasterTweets():
 
     classifier_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
     return classifier_model
+"""
